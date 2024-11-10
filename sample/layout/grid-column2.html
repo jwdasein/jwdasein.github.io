@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Column Layout</title>
+    <style>
+        .container {
+            display: grid;
+            /* Creates two equal-width columns */
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .column {
+            padding: 10px;
+        }
+
+        .column1 {
+            background-color: lightblue;
+        }
+
+        .column2 {
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="column column1">
+            <h2>Column 1</h2>
+            <p>This is the first column.</p>
+        </div>
+        <div class="column column2">
+            <h2>Column 2</h2>
+            <p>This is the second column.</p>
+        </div>
+    </div>
+</body>
+
+</html>
