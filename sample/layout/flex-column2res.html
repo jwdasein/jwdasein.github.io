@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Column Layout</title>
+    <style>
+        .container {
+            display: flex;
+            gap: 0px;
+        }
+
+        .column {
+            /* Creates equal-width for all columns */
+            flex: 1;
+            padding: 10px;
+        }
+
+        .column1 {
+            background-color: lightblue;
+        }
+
+        .column2 {
+            /* double size width for this column */
+            flex: 2;
+            background-color: lightgreen;
+            background: url("images/image-from-rawpixel-id-12211245-jpeg.jpg");
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                flex-direction: column-reverse;
+            }
+
+            .column2 {
+                min-height: 150px;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="column column1">
+            <h2>Column 1</h2>
+            <p>This is the first column.</p>
+        </div>
+
+        <div class="column column2">
+        </div>
+    </div>
+</body>
+
+</html>
