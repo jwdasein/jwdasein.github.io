@@ -8,7 +8,7 @@
     <style>
         .container {
             display: flex;
-            gap: 10px;
+            gap: 0px;
         }
 
         .column {
@@ -28,6 +28,17 @@
             background: url("images/image-from-rawpixel-id-12211245-jpeg.jpg");
             background-size: cover;
             background-position: bottom;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                flex-direction: column-reverse;
+            }
+
+            .column2 {
+                min-height: 150px;
+                flex: 1;
+            }
         }
     </style>
 </head>
