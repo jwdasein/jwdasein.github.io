@@ -30,6 +30,7 @@
         children.forEach(child => {
             child.addEventListener('mouseenter', () => changeBackground(child));
             child.addEventListener('touchstart', () => changeBackground(child));
+            child.addEventListener('click', () => changeBackground(child));
         });
     </script>
 </body>
