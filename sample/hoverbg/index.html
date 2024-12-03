@@ -20,20 +20,17 @@
         const children = document.querySelectorAll('.child');
         const parent = document.querySelector('.parent');
 
+        // Function to change background image
+        const changeBackground = (child) => {
+            const bgImage = child.getAttribute('data-bg');
+            parent.style.backgroundImage = `url(img/${bgImage})`;
+        };
+
         // Loop through each child and add event listeners
         children.forEach(child => {
-            child.addEventListener('mouseenter', () => {
-                // Get the background image from the data attribute of the child
-                const bgImage = child.getAttribute('data-bg');
-                parent.style.backgroundImage = `url(img/${bgImage})`;
-            });
-
-            child.addEventListener('mouseleave', () => {
-                // Reset the parent's background image when mouse leaves
-                parent.style.backgroundImage = "url('img/default.jpg')";
-            });
+            child.addEventListener('mouseenter', () => changeBackground(child));
+            child.addEventListener('touchstart', () => changeBackground(child));
         });
-
     </script>
 </body>
 
