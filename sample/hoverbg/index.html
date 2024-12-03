@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Child to Change Parent Background</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="parent">
+        <div class="child" data-bg="image1.jpg">Child 1</div>
+        <div class="child" data-bg="image2.jpg">Child 2</div>
+        <div class="child" data-bg="image3.jpg">Child 3</div>
+    </div>
+
+    <script>
+        // Get all the child elements
+        const children = document.querySelectorAll('.child');
+        const parent = document.querySelector('.parent');
+
+        // Loop through each child and add event listeners
+        children.forEach(child => {
+            child.addEventListener('mouseenter', () => {
+                // Get the background image from the data attribute of the child
+                const bgImage = child.getAttribute('data-bg');
+                parent.style.backgroundImage = `url(img/${bgImage})`;
+            });
+
+            child.addEventListener('mouseleave', () => {
+                // Reset the parent's background image when mouse leaves
+                parent.style.backgroundImage = "url('img/default.jpg')";
+            });
+        });
+
+    </script>
+</body>
+
+</html>
