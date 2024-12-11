@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1">
     <title>Home - Travel Around the World</title>
     <link rel="stylesheet" href="css/general.css">
     <style>
@@ -21,28 +22,34 @@
             z-index: -10;
         }
 
+        /* SECTION: Banner Message */
         .bannermessage {
             padding: 15px;
             display: flex;
             align-items: stretch;
+            /* Stretch the children to have the same height */
         }
 
         .bannermessage div {
             flex: 1;
+            /* Allow the divs to grow and shrink equally */
             padding: 15px;
             text-align: center;
             border-left: 1px solid white;
             display: flex;
             align-items: center;
+            /* Center the content vertically */
+        }
+
+        .bannermessage div:first-child {
+            border-left: none;
+            /* Remove the left border from the first div */
         }
 
         .bannermessage div:first-child,
         .bannermessage div:last-child {
             flex: 1.5;
-        }
-
-        .bannermessage div:first-child {
-            border: none;
+            /* Make the first and last divs 1.5 times larger than the others */
         }
 
         /* SECTION: Find your best destination */
@@ -61,7 +68,8 @@
         }
 
         .searchfield {
-            width: 200px;
+            width: 250px;
+            margin-left: 50px;
         }
 
         .searchbutton {
@@ -133,6 +141,8 @@
 
             .searchbar,
             .searchfield {
+                margin-left: 0px;
+                ;
                 width: 100%;
             }
 
@@ -175,7 +185,7 @@
 </head>
 
 <body>
-    <header>
+    <header id="top">
         <div class="navbar">
             <a href="#" class="logo">Logo</a>
             <!-- Checkbox to toggle menu on mobile -->
@@ -186,13 +196,13 @@
                 <label for="menu-checkbox" class="close-btn">&times;</label>
                 <a href="#">Home</a>
                 <div class="menu-item">
-                    <a href="#">Destination </a>
+                    <a href="#">Destination</a>
                     <div class="submenu">
                         <a href="#">Mission</a>
                         <a href="#">Vision</a>
                     </div>
                 </div>
-                <a href="#">Guide </a>
+                <a href="#">Guide</a>
                 <a href="#">Contact Us</a>
             </div>
         </div>
@@ -266,11 +276,15 @@
     </main>
     <footer>
         <div>
-            <h4 class="font-green">Travel</h4>
+            <h3 class="font-green">Travel</h3>
             <p>The best travel agent in the world. <br />Contact us immediatly now!</p>
         </div>
-        <div class="social_links">
-            <div class="social"></div>
+        <div class="sociallinks">
+            <div class="social">
+                <a href="#"><img src="images/sm-ig.png" /></a>
+                <a href="#"><img src="images/sm-twitter.png" /></a>
+                <a href="#"><img src="images/sm-yt.png" /></a>
+            </div>
             <div class="links">
                 <div><a href="#">Home</a></div>
                 <div><a href="#">Destination</a></div>
@@ -280,6 +294,10 @@
         </div>
 
     </footer>
+
+    <div class="backtotop">
+        <a href="#top">Back to Top</a>
+    </div>
 
 </body>
 

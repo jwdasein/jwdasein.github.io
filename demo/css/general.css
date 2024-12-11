@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
 
+html, body {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 body {
     font-family: "Urbanist", sans-serif;
     margin: 0;
@@ -35,6 +40,15 @@ h4 {
     font-weight: bold;;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 input[type="text"] {
     font-family: "Urbanist", sans-serif;
     background-color: #eee;
@@ -60,8 +74,6 @@ input[type="text"]:focus {
 
 /* Content */
 main {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 0 40px;
 }
 
@@ -75,6 +87,9 @@ main {
 }
 
 /* Header */
+header {
+    margin-bottom: 40px;
+}
 .navbar {
     overflow: hidden;
     display: flex;
@@ -129,7 +144,7 @@ main {
 }
 
 .submenu a:hover {
-    background-color: #25A59E;
+    background-color: #34c1ba;
 }
 
 .menu-item:hover .submenu {
@@ -149,7 +164,45 @@ main {
 /* Footer */
 footer {
     border-top: 0.5px solid #d8d8d8;
-    padding: 40px 60px;
+    padding: 60px;
+    padding-bottom: 20px;
+}
+
+footer .sociallinks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+footer .social img {
+    width: 15px;
+    padding: 5px;
+    border-radius: 7.5px;
+    background-color: #EAFAF9;
+    margin-right: 10px;
+}
+footer .links {
+    display: flex;
+}
+footer .links a {
+    margin-right: 20px;
+}
+footer .links div:last-child a {
+    margin-right: 0px;
+}
+
+.backtotop {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background-color: #25A59E;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.backtotop a {
+    color: white;
 }
 
 /* Tablet */
@@ -172,8 +225,9 @@ footer {
         font-size: 60px;
     }
 
-
-
+    .navbar .logo {
+        padding-left: 0px;
+    }
     .menu {
         flex-direction: column;
         display: none;
@@ -216,10 +270,25 @@ footer {
         position: static;
     }
 
+    .submenu a{
+        font-size: 20px;
+    }
+
     /* Content */
     main {
         margin: 0 auto;
         padding: 0;
+    }
+
+    footer {
+        padding: 40px;
+    }
+
+    footer .social_links {
+        flex-direction: column;
+    }
+    footer .links {
+        margin-top: 20px;
     }
 }
 
