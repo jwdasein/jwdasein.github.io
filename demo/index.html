@@ -6,182 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1">
     <title>Home - Travel Around the World</title>
     <link rel="stylesheet" href="css/general.css">
-    <style>
-        /* SECTION: Hero Banner */
-        .banner {
-            text-align: center;
-            background-image: url('images/circlebackground.png');
-            background-size: 80%;
-            background-repeat: no-repeat;
-            background-position: bottom center;
-        }
-
-        .banner h1 {
-            position: relative;
-            bottom: -50px;
-            z-index: -10;
-        }
-
-        /* SECTION: Banner Message */
-        .bannermessage {
-            padding: 15px;
-            display: flex;
-            align-items: stretch;
-            /* Stretch the children to have the same height */
-        }
-
-        .bannermessage div {
-            flex: 1;
-            /* Allow the divs to grow and shrink equally */
-            padding: 15px;
-            text-align: center;
-            border-left: 1px solid white;
-            display: flex;
-            align-items: center;
-            /* Center the content vertically */
-        }
-
-        .bannermessage div:first-child {
-            border-left: none;
-            /* Remove the left border from the first div */
-        }
-
-        .bannermessage div:first-child,
-        .bannermessage div:last-child {
-            flex: 1.5;
-            /* Make the first and last divs 1.5 times larger than the others */
-        }
-
-        /* SECTION: Find your best destination */
-        .bestdestination {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 65px 0px 30px 0px;
-        }
-
-        .searchbar {
-            position: relative;
-            display: flex;
-            align-items: center;
-            bottom: 10px;
-        }
-
-        .searchfield {
-            width: 250px;
-            margin-left: 50px;
-        }
-
-        .searchbutton {
-            z-index: 10;
-            position: absolute;
-            right: 8px;
-            border: none;
-            border-radius: 20px;
-            background-color: #EE8F39;
-            height: 40px;
-            cursor: pointer;
-        }
-
-        .searchbutton img {
-            width: 20px;
-        }
-
-        .destination {
-            display: flex;
-            justify-content: space-evenly;
-            flex-wrap: wrap;
-            gap: 1%;
-            row-gap: 40px;
-        }
-
-        .destination>div {
-            width: 28%;
-            padding: 15px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        .memorable {
-            display: flex;
-            align-items: center;
-            padding: 65px 0px 30px 0px;
-        }
-
-        .memorable div {
-            flex: 1;
-            padding: 15px;
-        }
-
-        /* Tablet */
-        @media screen and (max-width: 720px) {
-            .bannermessage {
-                padding: 8px;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .bannermessage div,
-            .bannermessage div:first-child {
-                display: block;
-                width: 80%;
-                padding: 25px;
-                border-left: none;
-                border-bottom: 1px solid white;
-            }
-
-            .bannermessage div:last-child {
-                border: none;
-            }
-
-            .bestdestination {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 40px 20px;
-            }
-
-            .searchbar,
-            .searchfield {
-                margin-left: 0px;
-                ;
-                width: 100%;
-            }
-
-            .searchbar {
-                margin-top: 25px;
-            }
-
-            .destination>div {
-                width: 40%;
-            }
-        }
-
-        /* Mobie */
-        @media screen and (max-width: 600px) {
-
-            .bannermessage div,
-            .bannermessage div:first-child {
-                padding: 18px;
-            }
-
-            .destination>div {
-                width: 80%;
-            }
-
-            .memorable {
-                padding: 40px 20px;
-                flex-direction: column;
-            }
-
-            .memorable div:first-child {
-                order: 2;
-            }
-
-            .memorable div:last-child {
-                order: 1;
-            }
-
-        }
-    </style>
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
@@ -210,7 +35,7 @@
     <main>
         <div class="banner">
             <h1><span class="font-green">Travel</span> Around<br />the World</h1>
-            <img src="images/happycouple.png" alt="Travel Around the World" width="80%">
+            <img src="images/home-happycouple.png" alt="Travel Around the World" width="80%">
 
         </div>
         <div class="bannermessage background-green">
@@ -228,39 +53,39 @@
             </div>
             <div class="searchbar">
                 <input type="text" class="searchfield" placeholder="Search destination">
-                <button class="searchbutton"><img src="images/search-icon.png"></button>
+                <button class="searchbutton"><img src="images/icon-search.png"></button>
             </div>
         </div>
         <div class="destination">
             <div>
                 <img src="images/destination-oeschinenlake.jpg" width="100%" />
                 <h4>Oeschinen Lake</h4>
-                <p><img src="images/pin.png" width="10" /> Pasuruan, Indonesia</p>
+                <p><img src="images/icon-pin.png" width="10" /> Pasuruan, Indonesia</p>
             </div>
             <div>
                 <img src="images/destination-hotballoon.jpg" width="100%" />
                 <h4>Hot Balloon</h4>
-                <p><img src="images/pin.png" width="10" /> Cappadocia, Turkey</p>
+                <p><img src="images/icon-pin.png" width="10" /> Cappadocia, Turkey</p>
             </div>
             <div>
                 <img src="images/destination-mirrorlake.jpg" width="100%" />
                 <h4>Mirro Lake</h4>
-                <p><img src="images/pin.png" width="10" /> Jawa Tengah, Indonesia</p>
+                <p><img src="images/icon-pin.png" width="10" /> Jawa Tengah, Indonesia</p>
             </div>
             <div>
                 <img src="images/destination-oeschinenlake.jpg" width="100%" />
                 <h4>Oeschinen Lake</h4>
-                <p><img src="images/pin.png" width="10" /> Pasuruan, Indonesia</p>
+                <p><img src="images/icon-pin.png" width="10" /> Pasuruan, Indonesia</p>
             </div>
             <div>
                 <img src="images/destination-hotballoon.jpg" width="100%" />
                 <h4>Hot Balloon</h4>
-                <p><img src="images/pin.png" width="10" /> Cappadocia, Turkey</p>
+                <p><img src="images/icon-pin.png" width="10" /> Cappadocia, Turkey</p>
             </div>
             <div>
                 <img src="images/destination-mirrorlake.jpg" width="100%" />
                 <h4>Mirro Lake</h4>
-                <p><img src="images/pin.png" width="10" /> Jawa Tengah, Indonesia</p>
+                <p><img src="images/icon-pin.png" width="10" /> Jawa Tengah, Indonesia</p>
             </div>
 
         </div>
@@ -271,7 +96,7 @@
                     very memorable with the best travel agent, <span class="font-green">Travel</span>!</p>
                 <button>See More</button>
             </div>
-            <div><img src="images/coupleseeking.png" width="100%" /></div>
+            <div><img src="images/home-coupleseeking.png" width="100%" /></div>
         </div>
     </main>
     <footer>
@@ -281,9 +106,9 @@
         </div>
         <div class="sociallinks">
             <div class="social">
-                <a href="#"><img src="images/sm-ig.png" /></a>
-                <a href="#"><img src="images/sm-twitter.png" /></a>
-                <a href="#"><img src="images/sm-yt.png" /></a>
+                <a href="#"><img src="images/icon-ig.png" /></a>
+                <a href="#"><img src="images/icon-twitter.png" /></a>
+                <a href="#"><img src="images/icon-yt.png" /></a>
             </div>
             <div class="links">
                 <div><a href="#">Home</a></div>
@@ -296,7 +121,7 @@
     </footer>
 
     <div class="backtotop">
-        <a href="#top">Back to Top</a>
+        <a href="#top"><img src="images/icon-top.png" width="20" /> </a>
     </div>
 
 </body>

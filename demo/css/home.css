@@ -1,0 +1,167 @@
+/* SECTION: Hero Banner */
+.banner {
+    text-align: center;
+    background-image: url('../images/home-circlebackground.png');
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+.banner h1 {
+    position: relative;
+    bottom: -50px;
+    z-index: -10;
+}
+
+/* SECTION: Banner Message */
+.bannermessage {
+    padding: 15px;
+    display: flex;
+    align-items: stretch;
+    /* Stretch the children to have the same height */
+}
+
+.bannermessage div {
+    flex: 1;
+    /* Allow the divs to grow and shrink equally */
+    padding: 15px;
+    text-align: center;
+    border-left: 1px solid white;
+    display: flex;
+    align-items: center;
+    /* Center the content vertically */
+}
+
+.bannermessage div:first-child {
+    border-left: none;
+    /* Remove the left border from the first div */
+}
+
+.bannermessage div:first-child,
+.bannermessage div:last-child {
+    flex: 1.5;
+    /* Make the first and last divs 1.5 times larger than the others */
+}
+
+/* SECTION: Find your best destination */
+.bestdestination {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 65px 0px 30px 0px;
+}
+
+.searchbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    bottom: 10px;
+}
+
+.searchfield {
+    width: 250px;
+    margin-left: 50px;
+}
+
+.searchbutton {
+    position: absolute;
+    right: 8px;
+}
+
+.searchbutton img {
+    width: 20px;
+}
+
+.destination {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 1%;
+    row-gap: 40px;
+}
+
+.destination>div {
+    width: 28%;
+    padding: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.memorable {
+    display: flex;
+    align-items: center;
+    padding: 65px 0px 30px 0px;
+}
+
+.memorable div {
+    flex: 1;
+    padding: 15px;
+}
+
+/* Tablet */
+@media screen and (max-width: 720px) {
+    .bannermessage {
+        padding: 8px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .bannermessage div,
+    .bannermessage div:first-child {
+        display: block;
+        width: 80%;
+        padding: 25px;
+        border-left: none;
+        border-bottom: 1px solid white;
+    }
+
+    .bannermessage div:last-child {
+        border: none;
+    }
+
+    .bestdestination {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 20px;
+    }
+
+    .searchbar,
+    .searchfield {
+        margin-left: 0px;
+        width: 100%;
+    }
+
+    .searchbar {
+        margin-top: 25px;
+    }
+
+    .destination>div {
+        width: 40%;
+    }
+}
+
+/* Mobie */
+@media screen and (max-width: 600px) {
+
+    .bannermessage div,
+    .bannermessage div:first-child {
+        padding: 18px;
+    }
+
+    .destination>div {
+        width: 70%;
+    }
+
+    .memorable {
+        padding: 40px 20px;
+        flex-direction: column;
+    }
+
+    .memorable div:first-child {
+        order: 2;
+    }
+
+    .memorable div:last-child {
+        order: 1;
+    }
+
+}
