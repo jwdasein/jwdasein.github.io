@@ -10,6 +10,7 @@
 .banner h1 {
     position: relative;
     bottom: -50px;
+    padding: 15px;
     z-index: -10;
 }
 
