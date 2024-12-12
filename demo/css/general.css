@@ -3,6 +3,7 @@
 */
 @import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* General Elements used for all pages */
 html, body {
     max-width: 1200px;
     margin: 0 auto;
@@ -12,7 +13,7 @@ body {
     font-family: "Urbanist", sans-serif;
     margin: 0;
     padding: 0;
-    font-size: medium;
+    font-size: 16px;
 }
 
 h1, h2, h3{
@@ -41,6 +42,10 @@ h3 {
 h4 {
     font-size: 16px;
     font-weight: bold;;
+}
+
+p {
+    line-height: 22px;
 }
 
 a {
@@ -77,7 +82,7 @@ input[type="text"]:focus {
     outline: none;
 }
 
-/* Content */
+/* Main Content */
 main {
     padding: 0 40px;
 }
@@ -196,6 +201,8 @@ footer .links div:last-child a {
     margin-right: 0px;
 }
 
+/* Back to Top */
+
 .backtotop {
     position: fixed;
     bottom: 20px;
@@ -212,9 +219,6 @@ footer .links div:last-child a {
 
 /* Tablet */
 @media screen and (max-width: 720px) {
-    body {
-        font-size: small;
-    }
     h1 {
         font-size: 72px;
     }
@@ -233,6 +237,7 @@ footer .links div:last-child a {
     .navbar .logo {
         padding-left: 0px;
     }
+
     .menu {
         flex-direction: column;
         display: none;
@@ -279,12 +284,13 @@ footer .links div:last-child a {
         font-size: 20px;
     }
 
-    /* Content */
+    /* Main Content */
     main {
         margin: 0 auto;
         padding: 0;
     }
 
+    /* Footer */
     footer {
         padding: 40px;
     }
