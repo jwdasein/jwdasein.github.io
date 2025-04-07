@@ -6,56 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model Animation</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         body,
         html {
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            /* Allow vertical scrolling */
         }
 
         canvas {
             display: block;
+            position: fixed;
+            /* Keep the canvas fixed while scrolling */
+            top: 0;
+            left: 0;
         }
 
-        section {
+        #container {
+            width: 100vw;
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-        }
-
-        #section1 {
-            background: #1e1e1e;
-        }
-
-        #section2 {
-            background: #2e2e2e;
-        }
-
-        #section3 {
-            background: #3e3e3e;
+            pointer-events: none;
+            /* Prevent the canvas from blocking scroll events */
         }
     </style>
 </head>
 
 <body>
     <div id="container"></div>
-    <section id="section1">Scroll to animate the bee</section>
-    <section id="section2">Bee moves differently here</section>
-    <section id="section3">Final animation section</section>
+    <section id="section1" style="height: 100vh; background: #1e1e1e;"></section>
+    <section id="section2" style="height: 100vh; background: #1d6b41;"></section>
+    <section id="section3" style="height: 100vh; background: #4c1313;"></section>
 
     <script>
         // Scene setup
         const container = document.getElementById('container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ alpha: true }); // Enable transparency
+        renderer.setClearColor(0x000000, 0); // Set background to transparent
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
@@ -66,30 +58,78 @@
 
         // Load 3D model
         const loader = new THREE.GLTFLoader();
-        let bee;
-        loader.load('flying_bee.glb', (gltf) => {
-            bee = gltf.scene;
-            bee.scale.set(0.5, 0.5, 0.5);
-            scene.add(bee);
-        });
+        let bee, mixer;
+        loader.load(
+            'flying_bee.glb',
+            (gltf) => {
+                bee = gltf.scene;
+                bee.scale.set(1, 1, 0.5);
+                bee.position.set(0, 0, 0); // Position the bee at the center
+
+                // Apply material to all meshes in the bee model
+                bee.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshStandardMaterial({
+                            color: 0xffcc00, // Yellow color for the bee
+                            roughness: 0.5,
+                            metalness: 0.1
+                        });
+                    }
+                });
+
+                scene.add(bee);
+
+                // Enable animations if available
+                if (gltf.animations.length > 0) {
+                    mixer = new THREE.AnimationMixer(bee);
+                    gltf.animations.forEach((clip) => {
+                        mixer.clipAction(clip).play();
+                    });
+                }
+            },
+            undefined,
+            (error) => {
+                console.error('An error occurred while loading the model:', error);
+            }
+        );
 
         camera.position.z = 5;
 
-        // GSAP animations with ScrollTrigger
-        gsap.registerPlugin(ScrollTrigger);
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
 
-        ScrollTrigger.defaults({
-            scrub: true,
-            markers: false
+            // Update the animation mixer
+            if (mixer) {
+                mixer.update(0.01); // Adjust the delta time as needed
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // GSAP ScrollTrigger setup
+        gsap.registerPlugin(ScrollTrigger);
 
         ScrollTrigger.create({
             trigger: "#section1",
             start: "top center",
             end: "bottom center",
+            scrub: 1.5, // Add a delay for smoother scrolling
             onUpdate: (self) => {
                 if (bee) {
-                    bee.rotation.y = self.progress * Math.PI * 2; // Rotate bee based on scroll progress
+                    const scale = 0.5 + self.progress * 5.0; // Scale from 0.5 to 5.5
+                    bee.scale.set(scale, scale, scale);
+
+                    const rotation = self.progress * Math.PI; // Rotate 180 degrees
+                    bee.rotation.y = rotation;
                 }
             }
         });
@@ -98,42 +138,12 @@
             trigger: "#section2",
             start: "top center",
             end: "bottom center",
+            scrub: 1.5, // Smooth scrolling
             onUpdate: (self) => {
                 if (bee) {
-                    bee.position.x = (self.progress - 0.5) * 10; // Move bee horizontally based on scroll progress
+                    bee.position.x = self.progress * 10; // Move bee to the right
                 }
             }
-        });
-
-        ScrollTrigger.create({
-            trigger: "#section3",
-            start: "top center",
-            end: "bottom center",
-            onUpdate: (self) => {
-                if (bee) {
-                    bee.position.y = (self.progress - 0.5) * 10; // Move bee vertically based on scroll progress
-                }
-            }
-        });
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Ensure bee is updated in the animation loop
-            if (bee) {
-                bee.rotation.y += 0.01; // Add a default rotation for the bee
-            }
-
-            renderer.render(scene, camera);
-        }
-        animate(); // Ensure the animation loop starts immediately
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
