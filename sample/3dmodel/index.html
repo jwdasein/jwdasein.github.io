@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        #section1 {
+            background: #1e1e1e;
+        }
+
+        #section2 {
+            background: #2e2e2e;
+        }
+
+        #section3 {
+            background: #3e3e3e;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <section id="section1">Scroll to animate the bee</section>
+    <section id="section2">Bee moves differently here</section>
+    <section id="section3">Final animation section</section>
+
+    <script>
+        // Scene setup
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+
+        // Load 3D model
+        const loader = new THREE.GLTFLoader();
+        let bee;
+        loader.load('flying_bee.glb', (gltf) => {
+            bee = gltf.scene;
+            bee.scale.set(0.5, 0.5, 0.5);
+            scene.add(bee);
+        });
+
+        camera.position.z = 5;
+
+        // GSAP animations with ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        ScrollTrigger.defaults({
+            scrub: true,
+            markers: false
+        });
+
+        ScrollTrigger.create({
+            trigger: "#section1",
+            start: "top center",
+            end: "bottom center",
+            onUpdate: (self) => {
+                if (bee) {
+                    bee.rotation.y = self.progress * Math.PI * 2; // Rotate bee based on scroll progress
+                }
+            }
+        });
+
+        ScrollTrigger.create({
+            trigger: "#section2",
+            start: "top center",
+            end: "bottom center",
+            onUpdate: (self) => {
+                if (bee) {
+                    bee.position.x = (self.progress - 0.5) * 10; // Move bee horizontally based on scroll progress
+                }
+            }
+        });
+
+        ScrollTrigger.create({
+            trigger: "#section3",
+            start: "top center",
+            end: "bottom center",
+            onUpdate: (self) => {
+                if (bee) {
+                    bee.position.y = (self.progress - 0.5) * 10; // Move bee vertically based on scroll progress
+                }
+            }
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Ensure bee is updated in the animation loop
+            if (bee) {
+                bee.rotation.y += 0.01; // Add a default rotation for the bee
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate(); // Ensure the animation loop starts immediately
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>
