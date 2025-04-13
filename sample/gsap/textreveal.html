@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Animation Example</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+
+        h1 {
+            font-family: sans-serif;
+            font-weight: 400;
+            font-size: 50px;
+            text-transform: uppercase;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .split-parent {
+            overflow: hidden;
+        }
+
+        .split-child {
+            display: inline-block;
+        }
+
+        .text-heading {
+            padding: 80px 0px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="height: 100vh;background-color: #000;"></div>
+    <div class="text-heading">
+        <h1>
+            Lorem Ipsum is dummy text Lorem Ipsum is dummy text
+        </h1>
+    </div>
+    <div style="height: 100vh;background-color: #000;"></div>
+    <script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="js/splittext.js"></script>
+    <script>
+        // Initialize Lenis smooth scrolling
+        const lenis = new Lenis({
+            duration: 1.2,
+            smooth: true,
+        });
+
+        // Integrate GSAP ScrollTrigger with Lenis
+        lenis.on('scroll', ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+
+        // Tell GSAP to use the lenis.raf for its ticker
+        gsap.ticker.lagSmoothing(0);
+
+        const childSplit = new SplitText("h1", {
+            type: "lines",
+            linesClass: "split-child"
+        });
+        const parentSplit = new SplitText("h1", {
+            // type: "lines",
+            linesClass: "split-parent"
+        });
+
+        gsap.from(childSplit.lines, {
+            scrollTrigger: {
+                trigger: ".text-heading",
+                start: "top center",
+                markers: true,
+                toggleActions: "play pause resume reverse"
+            },
+            duration: 1.5,
+            yPercent: 100,
+            ease: "power4",
+            stagger: 0.1
+        });
+    </script>
+</body>
+
+</html>
