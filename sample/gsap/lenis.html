@@ -31,10 +31,14 @@
         background-color: #2ecc71;
       }
       .circle {
-        width: 150px;
-        height: 150px;
+        width: 50px;
+        height: 50px;
         background-color: black;
         border-radius: 50%;
+      }
+      .circle-container {
+        display: flex;
+        gap: 40px;
       }
     </style>
     <!-- Lenis for smooth scrolling -->
@@ -51,9 +55,14 @@
       <div class="box">
       </div>
       <div class="box">
+        <div class="circle-container">
+          <div class="circle"></div>
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
       </div>   
     </div>
-    
+
     <script>
         // Initialize Lenis smooth scrolling
         const lenis = new Lenis({
@@ -79,7 +88,7 @@
             // Special animation for the first box - circle stays in view
             gsap.to(circle, 
               {
-                scale: 1.5, 
+                scale: 3.5, 
                 duration: 1,
                 scrollTrigger: {
                   trigger: box,
@@ -94,6 +103,21 @@
               }
             );
           } 
+          else if (i === 2) {
+            // Third section with three circles
+            const circles = box.querySelectorAll('.circle');
+            gsap.to(circles, {
+              y: -100,
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: box,
+                start: 'top center',
+                end: 'bottom center',
+                scrub: 1,
+                markers: true
+              }
+            });
+          }
         });
     </script>
   </body>
