@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Scroll Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            /* Native smooth scrolling */
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .poem-container {
+            position: relative;
+            width: 100%;
+            /* Total height will be number of sections × 100vh */
+            height: 1300vh;
+            /* 13 lines × 100vh */
+        }
+
+        .poem-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .fixed-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            padding-right: 10%;
+        }
+
+        .poem-display {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            max-height: 90vh;
+            /* Increased from 80vh to 90vh */
+            overflow: visible;
+            /* Changed from hidden to visible */
+        }
+
+        .poem-line {
+            font-size: 1.8rem;
+            /* Reduced from 2.5rem */
+            line-height: 1.3;
+            /* Reduced from 1.4 */
+            text-align: right;
+            font-weight: 300;
+            font-style: italic;
+            color: #222;
+            padding: 0.3rem 0;
+            /* Reduced from 0.5rem */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            z-index: 100;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .poem-line {
+                font-size: 1.4rem;
+                padding: 0.2rem 0;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .poem-line {
+                font-size: 1.4rem;
+                line-height: 1.2;
+                padding: 0.2rem 0;
+            }
+        }
+
+        @media (max-height: 500px) {
+            .poem-line {
+                font-size: 1.2rem;
+                line-height: 1.1;
+                padding: 0.1rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="instructions">Scroll down to reveal the poem</div>
+
+    <div class="poem-container">
+        <!-- Poem sections will be added by JavaScript -->
+    </div>
+
+    <div class="fixed-container">
+        <div class="poem-display">
+            <!-- Poem lines will be added here -->
+        </div>
+    </div>
+
+    <!-- GSAP and ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // Poem lines
+        const poemLines = [
+            "I wandered lonely as a cloud",
+            "That floats on high o'er vales and hills,",
+            "When all at once I saw a crowd,",
+            "A host, of golden daffodils;",
+            "Beside the lake, beneath the trees,",
+            "Fluttering and dancing in the breeze.",
+            "Continuous as the stars that shine",
+            "And twinkle on the milky way,",
+            "They stretched in never-ending line",
+            "Along the margin of a bay:",
+            "Ten thousand saw I at a glance,",
+            "Tossing their heads in sprightly dance.",
+            "— William Wordsworth"
+        ];
+
+        const poemContainer = document.querySelector('.poem-container');
+        const poemDisplay = document.querySelector('.poem-display');
+        const instructions = document.querySelector('.instructions');
+        const sections = [];
+        const lineElements = [];
+
+        // Create poem sections and line elements
+        poemLines.forEach((line, index) => {
+            // Create section for each line
+            const section = document.createElement('div');
+            section.classList.add('poem-section');
+            section.id = `section-${index}`;
+            section.dataset.index = index;
+            poemContainer.appendChild(section);
+            sections.push(section);
+
+            // Create line element
+            const lineElement = document.createElement('div');
+            lineElement.classList.add('poem-line');
+            lineElement.id = `line-${index}`;
+            lineElement.textContent = line;
+            poemDisplay.appendChild(lineElement);
+            lineElements.push(lineElement);
+        });
+
+        // Current active index
+        let currentIndex = -1;
+        let isScrolling = false;
+
+        // Function to check if all lines fit on screen
+        function checkLinesFit() {
+            const displayHeight = window.innerHeight * 0.9; // 90% of viewport height
+            const totalHeight = lineElements.reduce((sum, line) => sum + line.offsetHeight, 0);
+
+            // If lines don't fit, reduce font size
+            if (totalHeight > displayHeight && lineElements.length > 0) {
+                const currentSize = parseFloat(window.getComputedStyle(lineElements[0]).fontSize);
+                const ratio = displayHeight / totalHeight;
+                const newSize = Math.max(currentSize * ratio * 0.95, 0.8); // Don't go below 0.8rem
+
+                document.documentElement.style.setProperty('--poem-font-size', `${newSize}rem`);
+
+                // Apply new size to all lines
+                lineElements.forEach(line => {
+                    line.style.fontSize = `${newSize}rem`;
+                    line.style.lineHeight = '1.2';
+                    line.style.padding = '0.1rem 0';
+                });
+            }
+        }
+
+        // Set up ScrollTrigger for each section
+        sections.forEach((section, index) => {
+            ScrollTrigger.create({
+                trigger: section,
+                start: "top center",
+                end: "bottom center",
+                markers: false, // Removed markers for production
+                onEnter: () => {
+                    if (currentIndex < index) {
+                        currentIndex = index;
+                        updateDisplay();
+                    }
+
+                    // Hide instructions after first scroll
+                    if (index === 0) {
+                        gsap.to(instructions, {
+                            opacity: 0,
+                            duration: 0.5,
+                            onComplete: () => {
+                                instructions.style.display = 'none';
+                            }
+                        });
+                    }
+                },
+                onLeaveBack: () => {
+                    if (currentIndex >= index) {
+                        currentIndex = index - 1;
+                        updateDisplay();
+                    }
+                }
+            });
+        });
+
+        // Function to update the display based on current index
+        function updateDisplay() {
+            // Reset all lines
+            lineElements.forEach((line, i) => {
+                if (i <= currentIndex) {
+                    // Show lines up to current index
+                    gsap.to(line, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        delay: i === currentIndex ? 0.1 : 0 // Slight delay for newest line
+                    });
+                } else {
+                    // Hide lines after current index
+                    gsap.to(line, {
+                        opacity: 0,
+                        y: 30,
+                        duration: 0.3
+                    });
+                }
+            });
+
+            // Check if all visible lines fit on screen
+            checkLinesFit();
+        }
+
+        // Add snap scrolling
+        ScrollTrigger.create({
+            snap: {
+                snapTo: 1 / (sections.length - 1),
+                duration: 0.5,
+                delay: 0.1,
+                ease: "power2.inOut"
+            }
+        });
+
+        // Wheel event for better snap control
+        window.addEventListener('wheel', function (e) {
+            if (isScrolling) return;
+
+            isScrolling = true;
+
+            let targetIndex = currentIndex;
+
+            if (e.deltaY > 0 && targetIndex < sections.length - 1) {
+                // Scrolling down
+                targetIndex++;
+            } else if (e.deltaY < 0 && targetIndex > 0) {
+                // Scrolling up
+                targetIndex--;
+            } else {
+                isScrolling = false;
+                return;
+            }
+
+            gsap.to(window, {
+                duration: 0.8,
+                scrollTo: {
+                    y: `#section-${targetIndex}`,
+                    offsetY: 0
+                },
+                ease: "power2.inOut",
+                onComplete: () => {
+                    isScrolling = false;
+                }
+            });
+
+            e.preventDefault();
+        }, { passive: false });
+
+        // Touch events for mobile
+        let touchStartY = 0;
+
+        window.addEventListener('touchstart', function (e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', function (e) {
+            if (isScrolling) return;
+
+            const touchY = e.touches[0].clientY;
+            const diff = touchStartY - touchY;
+
+            if (Math.abs(diff) > 50) {
+                isScrolling = true;
+
+                let targetIndex = currentIndex;
+
+                if (diff > 0 && targetIndex < sections.length - 1) {
+                    // Swipe up (scroll down)
+                    targetIndex++;
+                } else if (diff < 0 && targetIndex > 0) {
+                    // Swipe down (scroll up)
+                    targetIndex--;
+                } else {
+                    isScrolling = false;
+                    return;
+                }
+
+                gsap.to(window, {
+                    duration: 0.8,
+                    scrollTo: {
+                        y: `#section-${targetIndex}`,
+                        offsetY: 0
+                    },
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        isScrolling = false;
+                    }
+                });
+
+                touchStartY = touchY;
+            }
+        }, { passive: true });
+
+        // Initialize with empty display
+        updateDisplay();
+
+        // Adjust the poem display container on resize
+        window.addEventListener('resize', function () {
+            checkLinesFit();
+            updateDisplay();
+        });
+
+        // Initial check after all content is loaded
+        window.addEventListener('load', function () {
+            checkLinesFit();
+            updateDisplay();
+        });
+    </script>
+</body>
+
+</html>
