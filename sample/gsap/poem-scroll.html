@@ -13,7 +13,8 @@
         }
 
         html {
-            scroll-behavior: smooth; /* Native smooth scrolling */
+            scroll-behavior: smooth;
+            /* Native smooth scrolling */
         }
 
         body {
@@ -72,10 +73,22 @@
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.5s ease, transform 0.5s ease;
-            white-space: nowrap; /* Prevent line wrapping */
-            overflow: visible; /* Ensure text is not cut off */
-            width: auto; /* Allow the width to adjust to content */
-            max-width: none; /* Remove max-width constraint */
+            white-space: nowrap;
+            /* Prevent line wrapping */
+            overflow: visible;
+            /* Ensure text is not cut off */
+            width: auto;
+            /* Allow the width to adjust to content */
+            max-width: none;
+            /* Remove max-width constraint */
+        }
+
+        /* Style for paragraph breaks */
+        .poem-line.paragraph-break {
+            height: 1.5rem;
+            /* Space between paragraphs */
+            padding: 0;
+            margin: 0.5rem 0;
         }
 
         .instructions {
@@ -105,12 +118,19 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
                 transform: translateY(0);
             }
+
             40% {
                 transform: translateY(-20px);
             }
+
             60% {
                 transform: translateY(-10px);
             }
@@ -199,15 +219,19 @@
                 font-size: 1.4rem;
                 padding: 0.2rem 0;
             }
+
             .fixed-container {
                 padding-right: 5%;
             }
+
             .poem-display {
                 right: 5%;
             }
+
             .poem-input-container {
                 max-width: 250px;
             }
+
             .instructions {
                 font-size: 1rem;
                 padding: 0.8rem 1.5rem;
@@ -218,9 +242,11 @@
             .poem-line {
                 font-size: 1.2rem;
             }
+
             .poem-input-container {
                 max-width: 200px;
             }
+
             .instructions {
                 font-size: 0.9rem;
                 padding: 0.7rem 1.2rem;
@@ -237,19 +263,21 @@
 
     <div class="poem-input-container collapsed">
         <button class="toggle-button">≡</button>
-        <label for="poem-text">Enter your poem (one line per line):</label>
+        <label for="poem-text">Enter your poem (one line per line, use a blank line for paragraph breaks):</label>
         <textarea id="poem-text">I wandered lonely as a cloud
 That floats on high o'er vales and hills,
 When all at once I saw a crowd,
 A host, of golden daffodils;
 Beside the lake, beneath the trees,
 Fluttering and dancing in the breeze.
+
 Continuous as the stars that shine
 And twinkle on the milky way,
 They stretched in never-ending line
 Along the margin of a bay:
 Ten thousand saw I at a glance,
 Tossing their heads in sprightly dance.
+
 — William Wordsworth</textarea>
         <button id="update-poem">Update Poem</button>
     </div>
@@ -298,7 +326,23 @@ Tossing their heads in sprightly dance.
 
         // Function to parse poem from textarea
         function getPoemLines() {
-            return poemTextarea.value.split('\n').filter(line => line.trim() !== '');
+            const lines = poemTextarea.value.split('\n');
+            const result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+
+                // If this is an empty line and not the first or last line, add a paragraph break
+                if (line === '' && i > 0 && i < lines.length - 1) {
+                    result.push({ text: '', isParagraphBreak: true });
+                }
+                // Otherwise, if it's not an empty line at the beginning or end, add it as a regular line
+                else if (line !== '' || (i > 0 && i < lines.length - 1)) {
+                    result.push({ text: line, isParagraphBreak: false });
+                }
+            }
+
+            return result;
         }
 
         // Function to clear existing poem
@@ -327,7 +371,7 @@ Tossing their heads in sprightly dance.
             // Reset current index and scroll state
             currentIndex = -1;
             hasScrolled = false;
-            
+
             // Show instructions
             instructions.style.display = 'block';
             gsap.to(instructions, {
@@ -339,8 +383,8 @@ Tossing their heads in sprightly dance.
         // Function to create poem elements
         function createPoemElements() {
             const poemLines = getPoemLines();
-            
-            // Set container height based on number of lines
+
+            // Set container height based on number of sections
             poemContainer.style.height = `${poemLines.length * 100}vh`;
 
             // Create poem sections and line elements
@@ -356,11 +400,16 @@ Tossing their heads in sprightly dance.
                 // Create line element
                 const lineElement = document.createElement('div');
                 lineElement.classList.add('poem-line');
+                if (line.isParagraphBreak) {
+                    lineElement.classList.add('paragraph-break');
+                    lineElement.innerHTML = '&nbsp;'; // Non-breaking space
+                } else {
+                    lineElement.textContent = line.text;
+                }
                 lineElement.id = `line-${index}`;
-                lineElement.textContent = line;
                 poemDisplay.appendChild(lineElement);
                 lineElements.push(lineElement);
-                
+
                 // Ensure all lines are initially hidden
                 gsap.set(lineElement, {
                     opacity: 0,
@@ -389,7 +438,7 @@ Tossing their heads in sprightly dance.
                                 }
                             });
                         }
-                        
+
                         if (currentIndex < index) {
                             currentIndex = index;
                             updateDisplay();
@@ -402,7 +451,7 @@ Tossing their heads in sprightly dance.
                         }
                     }
                 });
-                
+
                 scrollTriggers.push(trigger);
             });
 
@@ -415,7 +464,7 @@ Tossing their heads in sprightly dance.
                     ease: "power2.inOut"
                 } : null
             });
-            
+
             scrollTriggers.push(snapTrigger);
         }
 
@@ -423,12 +472,15 @@ Tossing their heads in sprightly dance.
         function adjustLineFontSizes() {
             const viewportWidth = window.innerWidth;
             const maxWidth = viewportWidth * 0.85; // 85% of viewport width
-            
+
             lineElements.forEach(line => {
+                // Skip paragraph breaks
+                if (line.classList.contains('paragraph-break')) return;
+
                 // Start with a reasonable font size
                 let fontSize = 1.8;
                 line.style.fontSize = `${fontSize}rem`;
-                
+
                 // Reduce font size until it fits
                 while (line.getBoundingClientRect().width > maxWidth && fontSize > 0.6) {
                     fontSize -= 0.1;
@@ -441,12 +493,15 @@ Tossing their heads in sprightly dance.
         function checkLinesFit() {
             const displayHeight = window.innerHeight * 0.9; // 90% of viewport height
             const totalHeight = lineElements.reduce((sum, line) => sum + line.offsetHeight, 0);
-            
+
             // If lines don't fit, reduce font size
             if (totalHeight > displayHeight && lineElements.length > 0) {
                 const ratio = displayHeight / totalHeight;
-                
+
                 lineElements.forEach(line => {
+                    // Skip paragraph breaks for font sizing
+                    if (line.classList.contains('paragraph-break')) return;
+
                     const currentSize = parseFloat(window.getComputedStyle(line).fontSize);
                     const newSize = Math.max(currentSize * ratio * 0.95, 0.6); // Don't go below 0.6rem
                     line.style.fontSize = `${newSize}rem`;
@@ -461,7 +516,7 @@ Tossing their heads in sprightly dance.
                 if (i <= currentIndex) {
                     // Show lines up to current index
                     gsap.to(line, {
-                        opacity: 1,
+                        opacity: line.classList.contains('paragraph-break') ? 0.3 : 1, // Lower opacity for paragraph breaks
                         y: 0,
                         duration: 0.5,
                         delay: i === currentIndex ? 0.1 : 0 // Slight delay for newest line
@@ -484,13 +539,13 @@ Tossing their heads in sprightly dance.
             setupScrollTriggers();
             adjustLineFontSizes();
             checkLinesFit();
-            
+
             // Don't call updateDisplay() here to keep all lines hidden initially
-            
+
             // Collapse the input container after updating
             inputContainer.classList.add('collapsed');
             toggleButton.textContent = '≡';
-            
+
             // Scroll to top
             window.scrollTo(0, 0);
         }
@@ -499,9 +554,9 @@ Tossing their heads in sprightly dance.
         updateButton.addEventListener('click', initializePoem);
 
         // Wheel event for better snap control
-        window.addEventListener('wheel', function(e) {
+        window.addEventListener('wheel', function (e) {
             if (isScrolling || sections.length === 0) return;
-            
+
             // First time user scrolls, hide instructions
             if (!hasScrolled && e.deltaY > 0) {
                 hasScrolled = true;
@@ -513,11 +568,11 @@ Tossing their heads in sprightly dance.
                     }
                 });
             }
-            
+
             isScrolling = true;
-            
+
             let targetIndex = currentIndex;
-            
+
             if (e.deltaY > 0 && targetIndex < sections.length - 1) {
                 // Scrolling down
                 targetIndex++;
@@ -528,7 +583,7 @@ Tossing their heads in sprightly dance.
                 isScrolling = false;
                 return;
             }
-            
+
             gsap.to(window, {
                 duration: 0.8,
                 scrollTo: {
@@ -540,23 +595,23 @@ Tossing their heads in sprightly dance.
                     isScrolling = false;
                 }
             });
-            
+
             e.preventDefault();
         }, { passive: false });
 
         // Touch events for mobile
         let touchStartY = 0;
-        
-        window.addEventListener('touchstart', function(e) {
+
+        window.addEventListener('touchstart', function (e) {
             touchStartY = e.touches[0].clientY;
         }, { passive: true });
-        
-        window.addEventListener('touchmove', function(e) {
+
+        window.addEventListener('touchmove', function (e) {
             if (isScrolling || sections.length === 0) return;
-            
+
             const touchY = e.touches[0].clientY;
             const diff = touchStartY - touchY;
-            
+
             // First time user scrolls, hide instructions
             if (!hasScrolled && diff > 0) {
                 hasScrolled = true;
@@ -568,12 +623,12 @@ Tossing their heads in sprightly dance.
                     }
                 });
             }
-            
+
             if (Math.abs(diff) > 50) {
                 isScrolling = true;
-                
+
                 let targetIndex = currentIndex;
-                
+
                 if (diff > 0 && targetIndex < sections.length - 1) {
                     // Swipe up (scroll down)
                     targetIndex++;
@@ -584,7 +639,7 @@ Tossing their heads in sprightly dance.
                     isScrolling = false;
                     return;
                 }
-                
+
                 gsap.to(window, {
                     duration: 0.8,
                     scrollTo: {
@@ -596,13 +651,13 @@ Tossing their heads in sprightly dance.
                         isScrolling = false;
                     }
                 });
-                
+
                 touchStartY = touchY;
             }
         }, { passive: true });
 
         // Adjust on resize
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             adjustLineFontSizes();
             checkLinesFit();
         });
