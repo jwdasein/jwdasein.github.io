@@ -62,25 +62,28 @@
             flex-direction: column;
             align-items: flex-end;
             max-height: 90vh;
-            /* Increased from 80vh to 90vh */
             overflow: visible;
-            /* Changed from hidden to visible */
         }
 
         .poem-line {
             font-size: 1.8rem;
-            /* Reduced from 2.5rem */
             line-height: 1.3;
-            /* Reduced from 1.4 */
             text-align: right;
             font-weight: 300;
             font-style: italic;
             color: #222;
             padding: 0.3rem 0;
-            /* Reduced from 0.5rem */
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            white-space: nowrap;
+            /* Prevent line wrapping */
+            overflow: visible;
+            /* Ensure text is not cut off */
+            width: auto;
+            /* Allow the width to adjust to content */
+            max-width: none;
+            /* Remove max-width constraint */
         }
 
         .instructions {
@@ -103,21 +106,19 @@
                 font-size: 1.4rem;
                 padding: 0.2rem 0;
             }
-        }
 
-        @media (max-height: 700px) {
-            .poem-line {
-                font-size: 1.4rem;
-                line-height: 1.2;
-                padding: 0.2rem 0;
+            .fixed-container {
+                padding-right: 5%;
+            }
+
+            .poem-display {
+                right: 5%;
             }
         }
 
-        @media (max-height: 500px) {
+        @media (max-width: 480px) {
             .poem-line {
                 font-size: 1.2rem;
-                line-height: 1.1;
-                padding: 0.1rem 0;
             }
         }
     </style>
@@ -191,24 +192,37 @@
         let currentIndex = -1;
         let isScrolling = false;
 
-        // Function to check if all lines fit on screen
+        // Function to adjust font size for each line to fit in one line
+        function adjustLineFontSizes() {
+            const viewportWidth = window.innerWidth;
+            const maxWidth = viewportWidth * 0.85; // 85% of viewport width
+
+            lineElements.forEach(line => {
+                // Start with a reasonable font size
+                let fontSize = 1.8;
+                line.style.fontSize = `${fontSize}rem`;
+
+                // Reduce font size until it fits
+                while (line.getBoundingClientRect().width > maxWidth && fontSize > 0.6) {
+                    fontSize -= 0.1;
+                    line.style.fontSize = `${fontSize}rem`;
+                }
+            });
+        }
+
+        // Function to check if all lines fit on screen and adjust if needed
         function checkLinesFit() {
             const displayHeight = window.innerHeight * 0.9; // 90% of viewport height
             const totalHeight = lineElements.reduce((sum, line) => sum + line.offsetHeight, 0);
 
             // If lines don't fit, reduce font size
             if (totalHeight > displayHeight && lineElements.length > 0) {
-                const currentSize = parseFloat(window.getComputedStyle(lineElements[0]).fontSize);
                 const ratio = displayHeight / totalHeight;
-                const newSize = Math.max(currentSize * ratio * 0.95, 0.8); // Don't go below 0.8rem
 
-                document.documentElement.style.setProperty('--poem-font-size', `${newSize}rem`);
-
-                // Apply new size to all lines
                 lineElements.forEach(line => {
+                    const currentSize = parseFloat(window.getComputedStyle(line).fontSize);
+                    const newSize = Math.max(currentSize * ratio * 0.95, 0.6); // Don't go below 0.6rem
                     line.style.fontSize = `${newSize}rem`;
-                    line.style.lineHeight = '1.2';
-                    line.style.padding = '0.1rem 0';
                 });
             }
         }
@@ -219,7 +233,7 @@
                 trigger: section,
                 start: "top center",
                 end: "bottom center",
-                markers: false, // Removed markers for production
+                markers: false,
                 onEnter: () => {
                     if (currentIndex < index) {
                         currentIndex = index;
@@ -267,9 +281,6 @@
                     });
                 }
             });
-
-            // Check if all visible lines fit on screen
-            checkLinesFit();
         }
 
         // Add snap scrolling
@@ -361,17 +372,21 @@
             }
         }, { passive: true });
 
-        // Initialize with empty display
+        // Run initial adjustments
+        adjustLineFontSizes();
+        checkLinesFit();
         updateDisplay();
 
-        // Adjust the poem display container on resize
+        // Adjust on resize
         window.addEventListener('resize', function () {
+            adjustLineFontSizes();
             checkLinesFit();
             updateDisplay();
         });
 
-        // Initial check after all content is loaded
+        // Final check after all content is loaded
         window.addEventListener('load', function () {
+            adjustLineFontSizes();
             checkLinesFit();
             updateDisplay();
         });
