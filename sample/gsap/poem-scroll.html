@@ -13,8 +13,7 @@
         }
 
         html {
-            scroll-behavior: smooth;
-            /* Native smooth scrolling */
+            scroll-behavior: smooth; /* Native smooth scrolling */
         }
 
         body {
@@ -27,9 +26,6 @@
         .poem-container {
             position: relative;
             width: 100%;
-            /* Total height will be number of sections × 100vh */
-            height: 1300vh;
-            /* 13 lines × 100vh */
         }
 
         .poem-section {
@@ -76,28 +72,125 @@
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.5s ease, transform 0.5s ease;
-            white-space: nowrap;
-            /* Prevent line wrapping */
-            overflow: visible;
-            /* Ensure text is not cut off */
-            width: auto;
-            /* Allow the width to adjust to content */
-            max-width: none;
-            /* Remove max-width constraint */
+            white-space: nowrap; /* Prevent line wrapping */
+            overflow: visible; /* Ensure text is not cut off */
+            width: auto; /* Allow the width to adjust to content */
+            max-width: none; /* Remove max-width constraint */
         }
 
         .instructions {
             position: fixed;
-            bottom: 2rem;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            opacity: 0.7;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+            opacity: 0.9;
             z-index: 100;
+            max-width: 80%;
+        }
+
+        .instructions p {
+            margin: 0.5rem 0;
+        }
+
+        .instructions .arrow {
+            font-size: 2rem;
+            margin-top: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .poem-input-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 200;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .poem-input-container.collapsed {
+            width: 40px;
+            height: 40px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .poem-input-container.collapsed textarea,
+        .poem-input-container.collapsed button,
+        .poem-input-container.collapsed label {
+            display: none;
+        }
+
+        .toggle-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .poem-input-container.collapsed .toggle-button {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
         }
 
         /* Responsive adjustments */
@@ -106,13 +199,18 @@
                 font-size: 1.4rem;
                 padding: 0.2rem 0;
             }
-
             .fixed-container {
                 padding-right: 5%;
             }
-
             .poem-display {
                 right: 5%;
+            }
+            .poem-input-container {
+                max-width: 250px;
+            }
+            .instructions {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
             }
         }
 
@@ -120,12 +218,41 @@
             .poem-line {
                 font-size: 1.2rem;
             }
+            .poem-input-container {
+                max-width: 200px;
+            }
+            .instructions {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="instructions">Scroll down to reveal the poem</div>
+    <div class="instructions">
+        <p>Scroll down to reveal the poem</p>
+        <div class="arrow">↓</div>
+    </div>
+
+    <div class="poem-input-container collapsed">
+        <button class="toggle-button">≡</button>
+        <label for="poem-text">Enter your poem (one line per line):</label>
+        <textarea id="poem-text">I wandered lonely as a cloud
+That floats on high o'er vales and hills,
+When all at once I saw a crowd,
+A host, of golden daffodils;
+Beside the lake, beneath the trees,
+Fluttering and dancing in the breeze.
+Continuous as the stars that shine
+And twinkle on the milky way,
+They stretched in never-ending line
+Along the margin of a bay:
+Ten thousand saw I at a glance,
+Tossing their heads in sprightly dance.
+— William Wordsworth</textarea>
+        <button id="update-poem">Update Poem</button>
+    </div>
 
     <div class="poem-container">
         <!-- Poem sections will be added by JavaScript -->
@@ -146,62 +273,162 @@
         // Register GSAP plugins
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-        // Poem lines
-        const poemLines = [
-            "I wandered lonely as a cloud",
-            "That floats on high o'er vales and hills,",
-            "When all at once I saw a crowd,",
-            "A host, of golden daffodils;",
-            "Beside the lake, beneath the trees,",
-            "Fluttering and dancing in the breeze.",
-            "Continuous as the stars that shine",
-            "And twinkle on the milky way,",
-            "They stretched in never-ending line",
-            "Along the margin of a bay:",
-            "Ten thousand saw I at a glance,",
-            "Tossing their heads in sprightly dance.",
-            "— William Wordsworth"
-        ];
-
+        // DOM elements
         const poemContainer = document.querySelector('.poem-container');
         const poemDisplay = document.querySelector('.poem-display');
         const instructions = document.querySelector('.instructions');
-        const sections = [];
-        const lineElements = [];
+        const poemTextarea = document.getElementById('poem-text');
+        const updateButton = document.getElementById('update-poem');
+        const toggleButton = document.querySelector('.toggle-button');
+        const inputContainer = document.querySelector('.poem-input-container');
 
-        // Create poem sections and line elements
-        poemLines.forEach((line, index) => {
-            // Create section for each line
-            const section = document.createElement('div');
-            section.classList.add('poem-section');
-            section.id = `section-${index}`;
-            section.dataset.index = index;
-            poemContainer.appendChild(section);
-            sections.push(section);
-
-            // Create line element
-            const lineElement = document.createElement('div');
-            lineElement.classList.add('poem-line');
-            lineElement.id = `line-${index}`;
-            lineElement.textContent = line;
-            poemDisplay.appendChild(lineElement);
-            lineElements.push(lineElement);
+        // Toggle input container
+        toggleButton.addEventListener('click', () => {
+            inputContainer.classList.toggle('collapsed');
+            toggleButton.textContent = inputContainer.classList.contains('collapsed') ? '≡' : '×';
         });
 
-        // Current active index
-        let currentIndex = -1;
+        // Variables
+        let sections = [];
+        let lineElements = [];
+        let currentIndex = -1; // Start with -1 so no lines are shown initially
         let isScrolling = false;
+        let scrollTriggers = [];
+        let hasScrolled = false; // Track if user has scrolled
+
+        // Function to parse poem from textarea
+        function getPoemLines() {
+            return poemTextarea.value.split('\n').filter(line => line.trim() !== '');
+        }
+
+        // Function to clear existing poem
+        function clearPoem() {
+            // Remove all sections
+            sections.forEach(section => {
+                section.remove();
+            });
+            sections = [];
+
+            // Remove all line elements
+            lineElements.forEach(line => {
+                line.remove();
+            });
+            lineElements = [];
+
+            // Clear poem display
+            poemDisplay.innerHTML = '';
+
+            // Kill all scroll triggers
+            scrollTriggers.forEach(trigger => {
+                trigger.kill();
+            });
+            scrollTriggers = [];
+
+            // Reset current index and scroll state
+            currentIndex = -1;
+            hasScrolled = false;
+            
+            // Show instructions
+            instructions.style.display = 'block';
+            gsap.to(instructions, {
+                opacity: 0.9,
+                duration: 0.5
+            });
+        }
+
+        // Function to create poem elements
+        function createPoemElements() {
+            const poemLines = getPoemLines();
+            
+            // Set container height based on number of lines
+            poemContainer.style.height = `${poemLines.length * 100}vh`;
+
+            // Create poem sections and line elements
+            poemLines.forEach((line, index) => {
+                // Create section for each line
+                const section = document.createElement('div');
+                section.classList.add('poem-section');
+                section.id = `section-${index}`;
+                section.dataset.index = index;
+                poemContainer.appendChild(section);
+                sections.push(section);
+
+                // Create line element
+                const lineElement = document.createElement('div');
+                lineElement.classList.add('poem-line');
+                lineElement.id = `line-${index}`;
+                lineElement.textContent = line;
+                poemDisplay.appendChild(lineElement);
+                lineElements.push(lineElement);
+                
+                // Ensure all lines are initially hidden
+                gsap.set(lineElement, {
+                    opacity: 0,
+                    y: 30
+                });
+            });
+        }
+
+        // Function to set up scroll triggers
+        function setupScrollTriggers() {
+            sections.forEach((section, index) => {
+                const trigger = ScrollTrigger.create({
+                    trigger: section,
+                    start: "top center",
+                    end: "bottom center",
+                    markers: false,
+                    onEnter: () => {
+                        // First time user scrolls, hide instructions
+                        if (!hasScrolled) {
+                            hasScrolled = true;
+                            gsap.to(instructions, {
+                                opacity: 0,
+                                duration: 0.5,
+                                onComplete: () => {
+                                    instructions.style.display = 'none';
+                                }
+                            });
+                        }
+                        
+                        if (currentIndex < index) {
+                            currentIndex = index;
+                            updateDisplay();
+                        }
+                    },
+                    onLeaveBack: () => {
+                        if (currentIndex >= index) {
+                            currentIndex = index - 1;
+                            updateDisplay();
+                        }
+                    }
+                });
+                
+                scrollTriggers.push(trigger);
+            });
+
+            // Add snap scrolling
+            const snapTrigger = ScrollTrigger.create({
+                snap: sections.length > 1 ? {
+                    snapTo: 1 / (sections.length - 1),
+                    duration: 0.5,
+                    delay: 0.1,
+                    ease: "power2.inOut"
+                } : null
+            });
+            
+            scrollTriggers.push(snapTrigger);
+        }
 
         // Function to adjust font size for each line to fit in one line
         function adjustLineFontSizes() {
             const viewportWidth = window.innerWidth;
             const maxWidth = viewportWidth * 0.85; // 85% of viewport width
-
+            
             lineElements.forEach(line => {
                 // Start with a reasonable font size
                 let fontSize = 1.8;
                 line.style.fontSize = `${fontSize}rem`;
-
+                
                 // Reduce font size until it fits
                 while (line.getBoundingClientRect().width > maxWidth && fontSize > 0.6) {
                     fontSize -= 0.1;
@@ -214,11 +441,11 @@
         function checkLinesFit() {
             const displayHeight = window.innerHeight * 0.9; // 90% of viewport height
             const totalHeight = lineElements.reduce((sum, line) => sum + line.offsetHeight, 0);
-
+            
             // If lines don't fit, reduce font size
             if (totalHeight > displayHeight && lineElements.length > 0) {
                 const ratio = displayHeight / totalHeight;
-
+                
                 lineElements.forEach(line => {
                     const currentSize = parseFloat(window.getComputedStyle(line).fontSize);
                     const newSize = Math.max(currentSize * ratio * 0.95, 0.6); // Don't go below 0.6rem
@@ -226,39 +453,6 @@
                 });
             }
         }
-
-        // Set up ScrollTrigger for each section
-        sections.forEach((section, index) => {
-            ScrollTrigger.create({
-                trigger: section,
-                start: "top center",
-                end: "bottom center",
-                markers: false,
-                onEnter: () => {
-                    if (currentIndex < index) {
-                        currentIndex = index;
-                        updateDisplay();
-                    }
-
-                    // Hide instructions after first scroll
-                    if (index === 0) {
-                        gsap.to(instructions, {
-                            opacity: 0,
-                            duration: 0.5,
-                            onComplete: () => {
-                                instructions.style.display = 'none';
-                            }
-                        });
-                    }
-                },
-                onLeaveBack: () => {
-                    if (currentIndex >= index) {
-                        currentIndex = index - 1;
-                        updateDisplay();
-                    }
-                }
-            });
-        });
 
         // Function to update the display based on current index
         function updateDisplay() {
@@ -283,24 +477,47 @@
             });
         }
 
-        // Add snap scrolling
-        ScrollTrigger.create({
-            snap: {
-                snapTo: 1 / (sections.length - 1),
-                duration: 0.5,
-                delay: 0.1,
-                ease: "power2.inOut"
-            }
-        });
+        // Function to initialize the poem
+        function initializePoem() {
+            clearPoem();
+            createPoemElements();
+            setupScrollTriggers();
+            adjustLineFontSizes();
+            checkLinesFit();
+            
+            // Don't call updateDisplay() here to keep all lines hidden initially
+            
+            // Collapse the input container after updating
+            inputContainer.classList.add('collapsed');
+            toggleButton.textContent = '≡';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Update button event listener
+        updateButton.addEventListener('click', initializePoem);
 
         // Wheel event for better snap control
-        window.addEventListener('wheel', function (e) {
-            if (isScrolling) return;
-
+        window.addEventListener('wheel', function(e) {
+            if (isScrolling || sections.length === 0) return;
+            
+            // First time user scrolls, hide instructions
+            if (!hasScrolled && e.deltaY > 0) {
+                hasScrolled = true;
+                gsap.to(instructions, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        instructions.style.display = 'none';
+                    }
+                });
+            }
+            
             isScrolling = true;
-
+            
             let targetIndex = currentIndex;
-
+            
             if (e.deltaY > 0 && targetIndex < sections.length - 1) {
                 // Scrolling down
                 targetIndex++;
@@ -311,7 +528,7 @@
                 isScrolling = false;
                 return;
             }
-
+            
             gsap.to(window, {
                 duration: 0.8,
                 scrollTo: {
@@ -323,28 +540,40 @@
                     isScrolling = false;
                 }
             });
-
+            
             e.preventDefault();
         }, { passive: false });
 
         // Touch events for mobile
         let touchStartY = 0;
-
-        window.addEventListener('touchstart', function (e) {
+        
+        window.addEventListener('touchstart', function(e) {
             touchStartY = e.touches[0].clientY;
         }, { passive: true });
-
-        window.addEventListener('touchmove', function (e) {
-            if (isScrolling) return;
-
+        
+        window.addEventListener('touchmove', function(e) {
+            if (isScrolling || sections.length === 0) return;
+            
             const touchY = e.touches[0].clientY;
             const diff = touchStartY - touchY;
-
+            
+            // First time user scrolls, hide instructions
+            if (!hasScrolled && diff > 0) {
+                hasScrolled = true;
+                gsap.to(instructions, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        instructions.style.display = 'none';
+                    }
+                });
+            }
+            
             if (Math.abs(diff) > 50) {
                 isScrolling = true;
-
+                
                 let targetIndex = currentIndex;
-
+                
                 if (diff > 0 && targetIndex < sections.length - 1) {
                     // Swipe up (scroll down)
                     targetIndex++;
@@ -355,7 +584,7 @@
                     isScrolling = false;
                     return;
                 }
-
+                
                 gsap.to(window, {
                     duration: 0.8,
                     scrollTo: {
@@ -367,29 +596,19 @@
                         isScrolling = false;
                     }
                 });
-
+                
                 touchStartY = touchY;
             }
         }, { passive: true });
 
-        // Run initial adjustments
-        adjustLineFontSizes();
-        checkLinesFit();
-        updateDisplay();
-
         // Adjust on resize
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function() {
             adjustLineFontSizes();
             checkLinesFit();
-            updateDisplay();
         });
 
-        // Final check after all content is loaded
-        window.addEventListener('load', function () {
-            adjustLineFontSizes();
-            checkLinesFit();
-            updateDisplay();
-        });
+        // Initialize on load
+        window.addEventListener('load', initializePoem);
     </script>
 </body>
 
