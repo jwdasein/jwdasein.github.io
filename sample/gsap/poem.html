@@ -390,38 +390,31 @@
             我揮一揮衣袖，
             不帶走一片雲彩。</textarea>
         <div class="settings">
-            <label>
-                每頁顯示行數：
+            <label for="lines-per-page">每頁顯示行數：
                 <input type="number" id="lines-per-page" min="1" max="20" value="8">
             </label>
         </div>
         <button id="update-poem">更新詩詞</button>
     </div>
-
     <div class="poem-container">
         <!-- Poem sections will be added by JavaScript -->
     </div>
-
     <div class="fixed-container">
         <div class="poem-display">
             <!-- Poem lines will be added here -->
         </div>
     </div>
-
     <div class="page-indicator">第 <span id="current-page">1</span> 頁，共 <span id="total-pages">1</span> 頁</div>
-
     <div class="page-navigation">
         <button id="prev-page" disabled>&lt;</button>
         <button id="next-page">&gt;</button>
     </div>
-
     <!-- GSAP, ScrollTrigger, and Splitting.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
     <link href="https://unpkg.com/splitting/dist/splitting.css" rel="stylesheet" />
-
     <script>
         // Register GSAP plugins
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -465,20 +458,15 @@
         function getPoemLines() {
             const lines = poemTextarea.value.split('\n');
             const result = [];
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-
-                // If this is an empty line and not the first or last line, add a paragraph break
-                if (line === '' && i > 0 && i < lines.length - 1) {
+            lines.forEach((line, i) => {
+                const trimmedLine = line.trim();
+                // If this is an empty line, add a paragraph break
+                if (trimmedLine === '') {
                     result.push({ text: '', isParagraphBreak: true });
+                } else {
+                    result.push({ text: trimmedLine, isParagraphBreak: false });
                 }
-                // Otherwise, if it's not an empty line at the beginning or end, add it as a regular line
-                else if (line !== '' || (i > 0 && i < lines.length - 1)) {
-                    result.push({ text: line, isParagraphBreak: false });
-                }
-            }
-
+            });
             return result;
         }
 
@@ -704,7 +692,6 @@
             if (index < 0 || index >= sections.length) return;
 
             isScrolling = true;
-
             gsap.to(window, {
                 duration: 0.5, // Faster for auto-scrolling
                 scrollTo: {
@@ -931,9 +918,7 @@
             }
 
             isScrolling = true;
-
             let targetIndex = currentIndex;
-
             if (e.deltaY > 0) {
                 // Scrolling down
                 if (targetIndex < sections.length - 1) {
@@ -988,7 +973,6 @@
             }
 
             scrollToIndex(targetIndex);
-
             e.preventDefault();
         }, { passive: false });
 
@@ -1017,9 +1001,7 @@
 
             if (Math.abs(diff) > 50) {
                 isScrolling = true;
-
                 let targetIndex = currentIndex;
-
                 if (diff > 0) {
                     // Swipe up (scroll down)
                     if (targetIndex < sections.length - 1) {
@@ -1074,7 +1056,6 @@
                 }
 
                 scrollToIndex(targetIndex);
-
                 touchStartY = touchY;
             }
         }, { passive: true });
@@ -1119,7 +1100,6 @@
             if (index < 0 || index >= sections.length) return;
 
             isScrolling = true;
-
             gsap.to(window, {
                 duration: 0.5,
                 scrollTo: {
@@ -1178,7 +1158,6 @@
             }
 
             isScrolling = true;
-
             if (deltaY > 0) {
                 handleNavigation('down');
             } else if (deltaY < 0) {
