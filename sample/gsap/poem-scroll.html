@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poem Scroll Animation</title>
+    <title>Chinese Poem Scroll Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -18,7 +19,7 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
+            font-family: 'Noto Serif TC', 'Georgia', serif;
             background-color: #f5f5f5;
             color: #333;
             overflow-x: hidden;
@@ -63,11 +64,10 @@
         }
 
         .poem-line {
-            font-size: 1.8rem;
-            line-height: 1.3;
+            font-size: 1.6rem;
+            line-height: 1.5;
             text-align: right;
             font-weight: 300;
-            font-style: italic;
             color: #222;
             padding: 0.3rem 0;
             opacity: 0;
@@ -81,6 +81,7 @@
             /* Allow the width to adjust to content */
             max-width: none;
             /* Remove max-width constraint */
+            letter-spacing: 0.1em;
         }
 
         /* Style for paragraph breaks */
@@ -158,7 +159,8 @@
 
         .poem-input-container.collapsed textarea,
         .poem-input-container.collapsed button,
-        .poem-input-container.collapsed label {
+        .poem-input-container.collapsed label,
+        .poem-input-container.collapsed .settings {
             display: none;
         }
 
@@ -187,7 +189,7 @@
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Georgia', serif;
+            font-family: 'Noto Serif TC', 'Georgia', serif;
             resize: vertical;
         }
 
@@ -211,6 +213,95 @@
             margin-bottom: 5px;
             font-weight: bold;
             font-size: 14px;
+        }
+
+        .settings {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .settings label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
+
+        .settings input[type="number"] {
+            width: 60px;
+            padding: 4px;
+            margin-left: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .page-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .page-navigation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .page-navigation button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .page-navigation button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .page-navigation button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Blinking animation for the next button */
+        @keyframes blink-button {
+
+            0%,
+            100% {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+
+            50% {
+                background-color: rgba(0, 0, 0, 0.9);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .page-navigation button.blinking {
+            animation: blink-button 1.5s infinite;
         }
 
         /* Responsive adjustments */
@@ -257,29 +348,54 @@
 
 <body>
     <div class="instructions">
-        <p>Scroll down to reveal the poem</p>
+        <p>向下滾動以顯示詜詞</p>
         <div class="arrow">↓</div>
     </div>
 
     <div class="poem-input-container collapsed">
         <button class="toggle-button">≡</button>
-        <label for="poem-text">Enter your poem (one line per line, use a blank line for paragraph breaks):</label>
-        <textarea id="poem-text">I wandered lonely as a cloud
-That floats on high o'er vales and hills,
-When all at once I saw a crowd,
-A host, of golden daffodils;
-Beside the lake, beneath the trees,
-Fluttering and dancing in the breeze.
+        <label for="poem-text">輸入詩詞（每行一句，空行表示段落分隔）：</label>
+        <textarea id="poem-text">輕輕的我走了，
+            正如我輕輕的來；
+            我輕輕的招手，
+            作別西天的雲彩。
 
-Continuous as the stars that shine
-And twinkle on the milky way,
-They stretched in never-ending line
-Along the margin of a bay:
-Ten thousand saw I at a glance,
-Tossing their heads in sprightly dance.
+            那河畔的金柳，
+            是夕陽中的新娘；
+            波光裡的艷影，
+            在我的心頭蕩漾。
 
-— William Wordsworth</textarea>
-        <button id="update-poem">Update Poem</button>
+            軟泥上的青荇，
+            油油的在水底招搖；
+            在康橋的柔波裡，
+            我甘心做一條水草！
+
+            那榆蔭下的一潭，
+            不是清泉，
+            是天上虹 揉碎在浮藻間，
+            沉澱著彩虹似的夢。
+
+            尋夢？撐一支長蒿，
+            向青草更青處漫溯，
+            滿載一船星輝，
+            在星輝斑斕裡放歌。
+
+            但我不能放歌，
+            悄悄是別離的笙簫；
+            夏蟲也為我沉默，
+            沉默是今晚的康橋！
+
+            悄悄的我走了，
+            正如我悄悄的來；
+            我揮一揮衣袖，
+            不帶走一片雲彩。</textarea>
+        <div class="settings">
+            <label>
+                每頁顯示行數：
+                <input type="number" id="lines-per-page" min="1" max="20" value="8">
+            </label>
+        </div>
+        <button id="update-poem">更新詩詞</button>
     </div>
 
     <div class="poem-container">
@@ -292,10 +408,19 @@ Tossing their heads in sprightly dance.
         </div>
     </div>
 
-    <!-- GSAP and ScrollTrigger -->
+    <div class="page-indicator">第 <span id="current-page">1</span> 頁，共 <span id="total-pages">1</span> 頁</div>
+
+    <div class="page-navigation">
+        <button id="prev-page" disabled>&lt;</button>
+        <button id="next-page">&gt;</button>
+    </div>
+
+    <!-- GSAP, ScrollTrigger, and Splitting.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+    <link href="https://unpkg.com/splitting/dist/splitting.css" rel="stylesheet" />
 
     <script>
         // Register GSAP plugins
@@ -309,6 +434,12 @@ Tossing their heads in sprightly dance.
         const updateButton = document.getElementById('update-poem');
         const toggleButton = document.querySelector('.toggle-button');
         const inputContainer = document.querySelector('.poem-input-container');
+        const linesPerPageInput = document.getElementById('lines-per-page');
+        const pageIndicator = document.querySelector('.page-indicator');
+        const currentPageSpan = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
+        const prevPageButton = document.getElementById('prev-page');
+        const nextPageButton = document.getElementById('next-page');
 
         // Toggle input container
         toggleButton.addEventListener('click', () => {
@@ -317,12 +448,18 @@ Tossing their heads in sprightly dance.
         });
 
         // Variables
+        let allPoemLines = []; // All poem lines
+        let poemPages = []; // Array of pages, each containing an array of line objects
         let sections = [];
         let lineElements = [];
         let currentIndex = -1; // Start with -1 so no lines are shown initially
         let isScrolling = false;
         let scrollTriggers = [];
         let hasScrolled = false; // Track if user has scrolled
+        let paragraphBreakIndices = []; // Track indices of paragraph breaks
+        let currentPage = 0;
+        let totalPages = 1;
+        let linesPerPage = 8; // Default lines per page
 
         // Function to parse poem from textarea
         function getPoemLines() {
@@ -343,6 +480,43 @@ Tossing their heads in sprightly dance.
             }
 
             return result;
+        }
+
+        // Function to divide poem lines into pages
+        function createPoemPages(lines) {
+            const pages = [];
+            let currentPage = [];
+            let lineCount = 0;
+
+            // Get lines per page from input
+            linesPerPage = parseInt(linesPerPageInput.value) || 8;
+
+            // Ensure linesPerPage is within reasonable bounds
+            linesPerPage = Math.max(1, Math.min(20, linesPerPage));
+
+            lines.forEach(line => {
+                // Add line to current page
+                currentPage.push(line);
+
+                // If not a paragraph break, increment line count
+                if (!line.isParagraphBreak) {
+                    lineCount++;
+                }
+
+                // If we've reached the max lines per page, start a new page
+                if (lineCount >= linesPerPage) {
+                    pages.push([...currentPage]);
+                    currentPage = [];
+                    lineCount = 0;
+                }
+            });
+
+            // Add any remaining lines to the last page
+            if (currentPage.length > 0) {
+                pages.push(currentPage);
+            }
+
+            return pages;
         }
 
         // Function to clear existing poem
@@ -370,25 +544,40 @@ Tossing their heads in sprightly dance.
 
             // Reset current index and scroll state
             currentIndex = -1;
-            hasScrolled = false;
+            paragraphBreakIndices = [];
 
-            // Show instructions
-            instructions.style.display = 'block';
-            gsap.to(instructions, {
-                opacity: 0.9,
-                duration: 0.5
+            // Don't reset hasScrolled or show instructions when navigating between pages
+            if (!hasScrolled) {
+                instructions.style.display = 'block';
+                gsap.to(instructions, {
+                    opacity: 0.9,
+                    duration: 0.5
+                });
+            }
+
+            // Hide page navigation
+            gsap.to([pageIndicator, document.querySelector('.page-navigation')], {
+                opacity: 0,
+                duration: 0.3
             });
         }
 
-        // Function to create poem elements
+        // Function to create poem elements for the current page
         function createPoemElements() {
-            const poemLines = getPoemLines();
+            // Clear any existing elements
+            poemDisplay.innerHTML = '';
+            lineElements = [];
+            sections = [];
+            paragraphBreakIndices = [];
+
+            // Get the current page of lines
+            const pageLines = poemPages[currentPage];
 
             // Set container height based on number of sections
-            poemContainer.style.height = `${poemLines.length * 100}vh`;
+            poemContainer.style.height = `${pageLines.length * 100}vh`;
 
             // Create poem sections and line elements
-            poemLines.forEach((line, index) => {
+            pageLines.forEach((line, index) => {
                 // Create section for each line
                 const section = document.createElement('div');
                 section.classList.add('poem-section');
@@ -403,6 +592,7 @@ Tossing their heads in sprightly dance.
                 if (line.isParagraphBreak) {
                     lineElement.classList.add('paragraph-break');
                     lineElement.innerHTML = '&nbsp;'; // Non-breaking space
+                    paragraphBreakIndices.push(index); // Track paragraph break indices
                 } else {
                     lineElement.textContent = line.text;
                 }
@@ -416,10 +606,33 @@ Tossing their heads in sprightly dance.
                     y: 30
                 });
             });
+
+            // Update page indicator
+            currentPageSpan.textContent = currentPage + 1;
+            totalPagesSpan.textContent = totalPages;
+
+            // Update navigation buttons
+            prevPageButton.disabled = currentPage === 0;
+            nextPageButton.disabled = currentPage === totalPages - 1;
+
+            // Show page navigation if we have more than one page
+            if (totalPages > 1) {
+                gsap.to([pageIndicator, document.querySelector('.page-navigation')], {
+                    opacity: 1,
+                    duration: 0.3
+                });
+            } else {
+                gsap.to([pageIndicator, document.querySelector('.page-navigation')], {
+                    opacity: 0,
+                    duration: 0.3
+                });
+            }
         }
 
         // Function to set up scroll triggers
         function setupScrollTriggers() {
+            scrollTriggers = [];
+
             sections.forEach((section, index) => {
                 const trigger = ScrollTrigger.create({
                     trigger: section,
@@ -442,12 +655,30 @@ Tossing their heads in sprightly dance.
                         if (currentIndex < index) {
                             currentIndex = index;
                             updateDisplay();
+
+                            // If this is a paragraph break, automatically scroll to the next line
+                            if (paragraphBreakIndices.includes(index) && index < sections.length - 1) {
+                                setTimeout(() => {
+                                    if (!isScrolling) {
+                                        scrollToIndex(index + 1);
+                                    }
+                                }, 300); // Short delay before auto-scrolling
+                            }
                         }
                     },
                     onLeaveBack: () => {
                         if (currentIndex >= index) {
                             currentIndex = index - 1;
                             updateDisplay();
+
+                            // If scrolling back and the previous line is a paragraph break, skip it
+                            if (paragraphBreakIndices.includes(currentIndex) && currentIndex > 0) {
+                                setTimeout(() => {
+                                    if (!isScrolling) {
+                                        scrollToIndex(currentIndex - 1);
+                                    }
+                                }, 300);
+                            }
                         }
                     }
                 });
@@ -468,6 +699,101 @@ Tossing their heads in sprightly dance.
             scrollTriggers.push(snapTrigger);
         }
 
+        // Function to scroll to a specific index
+        function scrollToIndex(index) {
+            if (index < 0 || index >= sections.length) return;
+
+            isScrolling = true;
+
+            gsap.to(window, {
+                duration: 0.5, // Faster for auto-scrolling
+                scrollTo: {
+                    y: `#section-${index}`,
+                    offsetY: 0
+                },
+                ease: "power2.inOut",
+                onComplete: () => {
+                    isScrolling = false;
+                }
+            });
+        }
+
+        // Function to navigate to a specific page
+        function navigateToPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex >= totalPages) return;
+
+            // Remove blinking from buttons when navigating
+            nextPageButton.classList.remove('blinking');
+            prevPageButton.classList.remove('blinking');
+
+            // Update current page
+            currentPage = pageIndex;
+
+            // Clear current display
+            clearPoem();
+
+            // Create elements for the new page
+            createPoemElements();
+
+            // Adjust font sizes
+            adjustLineFontSizes();
+
+            // Hide instructions since we're showing content
+            instructions.style.display = 'none';
+            hasScrolled = true;
+
+            // Set current index to show the first line
+            currentIndex = 0;
+
+            // IMPORTANT: Make sure the first line is visible before setting up scroll triggers
+            // Find the first non-paragraph-break line
+            let firstContentLineIndex = 0;
+            for (let i = 0; i < lineElements.length; i++) {
+                if (!lineElements[i].classList.contains('paragraph-break')) {
+                    firstContentLineIndex = i;
+                    break;
+                }
+            }
+
+            // Make the first content line visible immediately
+            lineElements.forEach((line, i) => {
+                if (i === firstContentLineIndex) {
+                    // Show first content line immediately with full opacity
+                    gsap.set(line, {
+                        opacity: 1,
+                        y: 0
+                    });
+                    // Update currentIndex to this line
+                    currentIndex = firstContentLineIndex;
+                } else if (i < firstContentLineIndex && lineElements[i].classList.contains('paragraph-break')) {
+                    // Show paragraph breaks before the first content line with reduced opacity
+                    gsap.set(line, {
+                        opacity: 0.3,
+                        y: 0
+                    });
+                } else {
+                    // Hide all other lines
+                    gsap.set(line, {
+                        opacity: 0,
+                        y: 30
+                    });
+                }
+            });
+
+            // Now set up scroll triggers after ensuring first line visibility
+            setupScrollTriggers();
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            // Update page indicator
+            currentPageSpan.textContent = currentPage + 1;
+
+            // Update navigation buttons
+            prevPageButton.disabled = currentPage === 0;
+            nextPageButton.disabled = currentPage === totalPages - 1;
+        }
+
         // Function to adjust font size for each line to fit in one line
         function adjustLineFontSizes() {
             const viewportWidth = window.innerWidth;
@@ -478,7 +804,7 @@ Tossing their heads in sprightly dance.
                 if (line.classList.contains('paragraph-break')) return;
 
                 // Start with a reasonable font size
-                let fontSize = 1.8;
+                let fontSize = 1.6;
                 line.style.fontSize = `${fontSize}rem`;
 
                 // Reduce font size until it fits
@@ -487,26 +813,6 @@ Tossing their heads in sprightly dance.
                     line.style.fontSize = `${fontSize}rem`;
                 }
             });
-        }
-
-        // Function to check if all lines fit on screen and adjust if needed
-        function checkLinesFit() {
-            const displayHeight = window.innerHeight * 0.9; // 90% of viewport height
-            const totalHeight = lineElements.reduce((sum, line) => sum + line.offsetHeight, 0);
-
-            // If lines don't fit, reduce font size
-            if (totalHeight > displayHeight && lineElements.length > 0) {
-                const ratio = displayHeight / totalHeight;
-
-                lineElements.forEach(line => {
-                    // Skip paragraph breaks for font sizing
-                    if (line.classList.contains('paragraph-break')) return;
-
-                    const currentSize = parseFloat(window.getComputedStyle(line).fontSize);
-                    const newSize = Math.max(currentSize * ratio * 0.95, 0.6); // Don't go below 0.6rem
-                    line.style.fontSize = `${newSize}rem`;
-                });
-            }
         }
 
         // Function to update the display based on current index
@@ -530,17 +836,59 @@ Tossing their heads in sprightly dance.
                     });
                 }
             });
+
+            // Check if we've reached the last line of the page
+            if (currentIndex === sections.length - 1 && currentPage < totalPages - 1) {
+                // Make the next button blink
+                nextPageButton.classList.add('blinking');
+                // Stop blinking after 5 seconds
+                setTimeout(() => {
+                    nextPageButton.classList.remove('blinking');
+                }, 5000);
+            } else {
+                // Remove blinking if not at the last line
+                nextPageButton.classList.remove('blinking');
+            }
+
+            // Check if we're at the first line of the page
+            if (currentIndex === 0 && currentPage > 0) {
+                // Make the previous button blink
+                prevPageButton.classList.add('blinking');
+                // Stop blinking after 5 seconds
+                setTimeout(() => {
+                    prevPageButton.classList.remove('blinking');
+                }, 5000);
+            } else {
+                // Remove blinking if not at the first line
+                prevPageButton.classList.remove('blinking');
+            }
         }
 
         // Function to initialize the poem
         function initializePoem() {
-            clearPoem();
-            createPoemElements();
-            setupScrollTriggers();
-            adjustLineFontSizes();
-            checkLinesFit();
+            // Parse all poem lines
+            allPoemLines = getPoemLines();
 
-            // Don't call updateDisplay() here to keep all lines hidden initially
+            // Create pages
+            poemPages = createPoemPages(allPoemLines);
+
+            // Set total pages
+            totalPages = poemPages.length;
+
+            // Start with the first page
+            currentPage = 0;
+
+            // Clear any existing poem
+            clearPoem();
+
+            // Create elements for the first page
+            createPoemElements();
+
+            // Adjust font sizes
+            adjustLineFontSizes();
+
+            // Set up scroll triggers
+            setupScrollTriggers();
 
             // Collapse the input container after updating
             inputContainer.classList.add('collapsed');
@@ -552,6 +900,19 @@ Tossing their heads in sprightly dance.
 
         // Update button event listener
         updateButton.addEventListener('click', initializePoem);
+
+        // Page navigation event listeners
+        prevPageButton.addEventListener('click', () => {
+            if (currentPage > 0) {
+                navigateToPage(currentPage - 1);
+            }
+        });
+
+        nextPageButton.addEventListener('click', () => {
+            if (currentPage < totalPages - 1) {
+                navigateToPage(currentPage + 1);
+            }
+        });
 
         // Wheel event for better snap control
         window.addEventListener('wheel', function (e) {
@@ -573,35 +934,65 @@ Tossing their heads in sprightly dance.
 
             let targetIndex = currentIndex;
 
-            if (e.deltaY > 0 && targetIndex < sections.length - 1) {
+            if (e.deltaY > 0) {
                 // Scrolling down
-                targetIndex++;
-            } else if (e.deltaY < 0 && targetIndex > 0) {
+                if (targetIndex < sections.length - 1) {
+                    targetIndex++;
+
+                    // If target is a paragraph break, skip to the next line
+                    if (paragraphBreakIndices.includes(targetIndex) && targetIndex < sections.length - 1) {
+                        targetIndex++;
+                    }
+                } else {
+                    // At the end of the page, don't allow further scrolling
+                    // User must click the next button to go to the next page
+                    isScrolling = false;
+
+                    // Make the next button blink if there's a next page
+                    if (currentPage < totalPages - 1) {
+                        nextPageButton.classList.add('blinking');
+                        // Stop blinking after 5 seconds
+                        setTimeout(() => {
+                            nextPageButton.classList.remove('blinking');
+                        }, 5000);
+                    }
+                    return;
+                }
+            } else if (e.deltaY < 0) {
                 // Scrolling up
-                targetIndex--;
+                if (targetIndex > 0) {
+                    targetIndex--;
+
+                    // If target is a paragraph break, skip to the previous line
+                    if (paragraphBreakIndices.includes(targetIndex) && targetIndex > 0) {
+                        targetIndex--;
+                    }
+                } else {
+                    // At the beginning of the page, don't allow further scrolling
+                    // User must click the previous button to go to the previous page
+                    isScrolling = false;
+
+                    // Make the previous button blink if there's a previous page
+                    if (currentPage > 0) {
+                        prevPageButton.classList.add('blinking');
+                        // Stop blinking after 5 seconds
+                        setTimeout(() => {
+                            prevPageButton.classList.remove('blinking');
+                        }, 5000);
+                    }
+                    return;
+                }
             } else {
                 isScrolling = false;
                 return;
             }
 
-            gsap.to(window, {
-                duration: 0.8,
-                scrollTo: {
-                    y: `#section-${targetIndex}`,
-                    offsetY: 0
-                },
-                ease: "power2.inOut",
-                onComplete: () => {
-                    isScrolling = false;
-                }
-            });
+            scrollToIndex(targetIndex);
 
             e.preventDefault();
         }, { passive: false });
 
         // Touch events for mobile
-        let touchStartY = 0;
-
         window.addEventListener('touchstart', function (e) {
             touchStartY = e.touches[0].clientY;
         }, { passive: true });
@@ -629,28 +1020,60 @@ Tossing their heads in sprightly dance.
 
                 let targetIndex = currentIndex;
 
-                if (diff > 0 && targetIndex < sections.length - 1) {
+                if (diff > 0) {
                     // Swipe up (scroll down)
-                    targetIndex++;
-                } else if (diff < 0 && targetIndex > 0) {
+                    if (targetIndex < sections.length - 1) {
+                        targetIndex++;
+
+                        // If target is a paragraph break, skip to the next line
+                        if (paragraphBreakIndices.includes(targetIndex) && targetIndex < sections.length - 1) {
+                            targetIndex++;
+                        }
+                    } else {
+                        // At the end of the page, don't allow further scrolling
+                        // User must click the next button to go to the next page
+                        isScrolling = false;
+
+                        // Make the next button blink if there's a next page
+                        if (currentPage < totalPages - 1) {
+                            nextPageButton.classList.add('blinking');
+                            // Stop blinking after 5 seconds
+                            setTimeout(() => {
+                                nextPageButton.classList.remove('blinking');
+                            }, 5000);
+                        }
+                        return;
+                    }
+                } else if (diff < 0) {
                     // Swipe down (scroll up)
-                    targetIndex--;
+                    if (targetIndex > 0) {
+                        targetIndex--;
+
+                        // If target is a paragraph break, skip to the previous line
+                        if (paragraphBreakIndices.includes(targetIndex) && targetIndex > 0) {
+                            targetIndex--;
+                        }
+                    } else {
+                        // At the beginning of the page, don't allow further scrolling
+                        // User must click the previous button to go to the previous page
+                        isScrolling = false;
+
+                        // Make the previous button blink if there's a previous page
+                        if (currentPage > 0) {
+                            prevPageButton.classList.add('blinking');
+                            // Stop blinking after 5 seconds
+                            setTimeout(() => {
+                                prevPageButton.classList.remove('blinking');
+                            }, 5000);
+                        }
+                        return;
+                    }
                 } else {
                     isScrolling = false;
                     return;
                 }
 
-                gsap.to(window, {
-                    duration: 0.8,
-                    scrollTo: {
-                        y: `#section-${targetIndex}`,
-                        offsetY: 0
-                    },
-                    ease: "power2.inOut",
-                    onComplete: () => {
-                        isScrolling = false;
-                    }
-                });
+                scrollToIndex(targetIndex);
 
                 touchStartY = touchY;
             }
@@ -659,11 +1082,131 @@ Tossing their heads in sprightly dance.
         // Adjust on resize
         window.addEventListener('resize', function () {
             adjustLineFontSizes();
-            checkLinesFit();
         });
 
         // Initialize on load
         window.addEventListener('load', initializePoem);
+
+        // Keyboard navigation
+        window.addEventListener('keydown', function (e) {
+            // Page navigation with arrow keys
+            if (e.key === 'ArrowLeft' && currentPage > 0) {
+                navigateToPage(currentPage - 1);
+            } else if (e.key === 'ArrowRight' && currentPage < totalPages - 1) {
+                navigateToPage(currentPage + 1);
+            }
+
+            // Line navigation with up/down arrow keys
+            if (e.key === 'ArrowUp' && currentIndex > 0) {
+                let targetIndex = currentIndex - 1;
+                // Skip paragraph breaks
+                if (paragraphBreakIndices.includes(targetIndex) && targetIndex > 0) {
+                    targetIndex--;
+                }
+                scrollToIndex(targetIndex);
+            } else if (e.key === 'ArrowDown' && currentIndex < sections.length - 1) {
+                let targetIndex = currentIndex + 1;
+                // Skip paragraph breaks
+                if (paragraphBreakIndices.includes(targetIndex) && targetIndex < sections.length - 1) {
+                    targetIndex++;
+                }
+                scrollToIndex(targetIndex);
+            }
+        });
+
+        // Utility function to scroll to a specific index
+        function scrollToIndex(index) {
+            if (index < 0 || index >= sections.length) return;
+
+            isScrolling = true;
+
+            gsap.to(window, {
+                duration: 0.5,
+                scrollTo: {
+                    y: `#section-${index}`,
+                    offsetY: 0
+                },
+                ease: "power2.inOut",
+                onComplete: () => {
+                    isScrolling = false;
+                }
+            });
+        }
+
+        // Utility function to handle navigation logic
+        function handleNavigation(direction) {
+            let targetIndex = currentIndex;
+
+            if (direction === 'down') {
+                if (targetIndex < sections.length - 1) {
+                    targetIndex++;
+                    if (paragraphBreakIndices.includes(targetIndex) && targetIndex < sections.length - 1) {
+                        targetIndex++;
+                    }
+                } else {
+                    // At the end of the page, don't navigate automatically
+                    return;
+                }
+            } else if (direction === 'up') {
+                if (targetIndex > 0) {
+                    targetIndex--;
+                    if (paragraphBreakIndices.includes(targetIndex) && targetIndex > 0) {
+                        targetIndex--;
+                    }
+                } else {
+                    // At the beginning of the page, don't navigate automatically
+                    return;
+                }
+            }
+
+            scrollToIndex(targetIndex);
+        }
+
+        // Combined event handler for wheel and touchmove
+        function handleScrollEvent(deltaY) {
+            if (isScrolling || sections.length === 0) return;
+
+            if (!hasScrolled && deltaY > 0) {
+                hasScrolled = true;
+                gsap.to(instructions, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        instructions.style.display = 'none';
+                    }
+                });
+            }
+
+            isScrolling = true;
+
+            if (deltaY > 0) {
+                handleNavigation('down');
+            } else if (deltaY < 0) {
+                handleNavigation('up');
+            }
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 500);
+        }
+
+        // Event listeners
+        window.addEventListener('wheel', (e) => handleScrollEvent(e.deltaY), { passive: false });
+
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const diff = touchStartY - touchY;
+
+            if (Math.abs(diff) > 50) {
+                handleScrollEvent(diff);
+                touchStartY = touchY;
+            }
+        }, { passive: true });
     </script>
 </body>
 
