@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSAP Animation Example</title>
+    <title>SplitText Animation Example</title>
     <style>
         html,
         body {
@@ -17,15 +17,7 @@
             font-size: 50px;
             text-transform: uppercase;
             margin: 0;
-            overflow: hidden;
-        }
-
-        .split-parent {
-            overflow: hidden;
-        }
-
-        .split-child {
-            display: inline-block;
+            color: #8f8f8f;
         }
 
         .text-heading {
@@ -36,55 +28,50 @@
 </head>
 
 <body>
-    <div style="height: 100vh;background-color: #000;"></div>
-    <div class="text-heading">
-        <h1>
-            Lorem Ipsum is dummy text Lorem Ipsum is dummy text
-        </h1>
+    <div>
+        <div style="height: 100vh;background-color: #000;"></div>
+        <div class="text-heading">
+            <h1 data-splitting>
+                Lorem Ipsum is dummy text Lorem Ipsum is dummy text
+            </h1>
+        </div>
+        <div style="height: 100vh;background-color: #000;"></div>
     </div>
-    <div style="height: 100vh;background-color: #000;"></div>
-    <script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="js/splittext.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
     <script>
-        // Initialize Lenis smooth scrolling
-        const lenis = new Lenis({
-            duration: 1.2,
-            smooth: true,
-        });
 
-        // Integrate GSAP ScrollTrigger with Lenis
-        lenis.on('scroll', ScrollTrigger.update);
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger, SplitText);
 
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-        });
+        // Initialize SplitText
+        const splitText = new SplitText(".text-heading h1", {
+            type: "chars, words"
+        }
+        );
 
-        // Tell GSAP to use the lenis.raf for its ticker
-        gsap.ticker.lagSmoothing(0);
-
-        const childSplit = new SplitText("h1", {
-            type: "lines",
-            linesClass: "split-child"
-        });
-        const parentSplit = new SplitText("h1", {
-            // type: "lines",
-            linesClass: "split-parent"
-        });
-
-        gsap.from(childSplit.lines, {
-            scrollTrigger: {
-                trigger: ".text-heading",
-                start: "top center",
-                markers: true,
-                toggleActions: "play pause resume reverse"
+        gsap.fromTo(
+            splitText.words,
+            {
+                y: 50, // Start position
+                opacity: 0 // Hidden initially
             },
-            duration: 1.5,
-            yPercent: 100,
-            ease: "power4",
-            stagger: 0.1
-        });
+            {
+                scrollTrigger: {
+                    trigger: ".text-heading",
+                    start: "top center",
+                    markers: true,
+                    toggleActions: "play pause resume reverse"
+                },
+                duration: 1.5,
+                y: 0, // End position
+                opacity: 1, // Fully visible
+                ease: "power4",
+                stagger: 0.2 // Smaller stagger for characters
+            }
+        );
+
     </script>
 </body>
 
