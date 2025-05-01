@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP ScrollSmoother Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Page content styles */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .box {
+            width: 300px;
+            height: 300px;
+            background-color: #3498db;
+            margin: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .parallax-section {
+            background-color: #2c3e50;
+            color: white;
+            overflow: hidden;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-image: url('https://source.unsplash.com/random/1920x1080/?nature');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .content-wrapper {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            max-width: 800px;
+        }
+
+        .stagger-boxes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+        }
+
+        .stagger-box {
+            width: 200px;
+            height: 200px;
+            background-color: #e74c3c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .pin-section {
+            height: 100vh;
+            background-color: #8e44ad;
+            color: white;
+            overflow: hidden;
+        }
+
+        .pin-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .pin-panel {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Wrapper and content for ScrollSmoother -->
+    <div id="smooth-wrapper">
+        <div id="smooth-content">
+            <!-- Hero Section -->
+            <section>
+                <h1>GSAP ScrollSmoother Example</h1>
+                <p>Scroll down to see various scroll effects with GSAP ScrollSmoother. This premium plugin provides
+                    butter-smooth scrolling with advanced features like speed adjustments, scroll-triggered animations,
+                    and more.</p>
+                <div class="box" data-speed="0.8">Smooth Scroll Box</div>
+            </section>
+
+            <!-- Parallax Section -->
+            <section class="parallax-section">
+                <div class="parallax-bg" data-speed="0.5"></div>
+                <div class="content-wrapper">
+                    <h1>Parallax Effect</h1>
+                    <p>This section demonstrates a parallax effect where the background moves at a different speed than
+                        the foreground content. The data-speed attribute controls how fast elements move relative to the
+                        scroll.</p>
+                </div>
+            </section>
+
+            <!-- Staggered Animation Section -->
+            <section>
+                <h1>Staggered Animations</h1>
+                <p>Elements can animate in sequence as you scroll down the page.</p>
+                <div class="stagger-boxes">
+                    <div class="stagger-box">1</div>
+                    <div class="stagger-box">2</div>
+                    <div class="stagger-box">3</div>
+                    <div class="stagger-box">4</div>
+                    <div class="stagger-box">5</div>
+                    <div class="stagger-box">6</div>
+                </div>
+            </section>
+
+            <!-- Final Section -->
+            <section>
+                <h1>Speed Control</h1>
+                <p>ScrollSmoother allows you to control the speed of different elements. Some can move faster or slower
+                    than the normal scroll speed.</p>
+                <div class="box" data-speed="1.5">Fast Box (1.5x)</div>
+                <div class="box" data-speed="0.5">Slow Box (0.5x)</div>
+            </section>
+        </div>
+    </div>
+
+    <!-- GSAP and ScrollSmoother -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+        // Create the smooth scroller
+        let smoother = ScrollSmoother.create({
+            smooth: 1.5, // How long (in seconds) it takes to "catch up" to the native scroll position
+            effects: true, // Looks for data-speed and data-lag attributes on elements
+            smoothTouch: 0.1, // Much shorter smoothing time on touch devices (default is NO smoothing on touch devices)
+        });
+
+        // Staggered boxes animation
+        const staggerBoxes = gsap.utils.toArray('.stagger-box');
+        staggerBoxes.forEach((box, i) => {
+            ScrollTrigger.create({
+                trigger: box,
+                start: "top bottom-=100",
+                end: "bottom center",
+                onEnter: () => {
+                    gsap.to(box, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        delay: i * 0.1,
+                        ease: "power2.out"
+                    });
+                },
+                once: true
+            });
+        });
+
+        // Add a class to html for scroll styling
+        document.documentElement.classList.add('has-scroll-smooth');
+    </script>
+</body>
+
+</html>
