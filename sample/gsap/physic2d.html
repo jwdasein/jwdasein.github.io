@@ -6,72 +6,309 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GSAP Physics2D Example</title>
     <style>
+        html,
         body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             margin: 0;
+        }
+
+        h4 {
+            color: var(--mid);
+            position: absolute;
+            width: 100%;
+            left: 0;
+            right: 0;
+            top: 1rem;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #0e100f;
+        }
+
+        .wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            height: 100vh;
-            background-color: #f0f0f0;
             overflow: hidden;
         }
 
-        .ball {
-            width: 50px;
-            height: 50px;
-            background-color: #e74c3c;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 100px;
-            /* Initial position above the ground */
+        .cannon {
+            position: relative;
+            z-index: 10;
+            background: transparent;
         }
 
-        .ground {
+        .flair-container {
+            width: 50px;
+            height: 50px;
             position: absolute;
             bottom: 0;
-            width: 100%;
-            height: 100px;
-            background-color: #2ecc71;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .flair {
+            width: 50px;
+            height: 50px;
+            background-image: url("https://assets.codepen.io/16327/flair.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .flair-bullet {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+            will-change: transform;
+            opacity: 0;
+        }
+
+        .flair--2 {
+            background-image: url("https://assets.codepen.io/16327/flair-2.png");
+        }
+
+        .flair--3 {
+            background-image: url("https://assets.codepen.io/16327/flair-3.png");
+        }
+
+        .flair--4 {
+            background-image: url("https://assets.codepen.io/16327/flair-4.png");
+        }
+
+        .flair--5 {
+            background-image: url("https://assets.codepen.io/16327/flair-5.png");
+        }
+
+        .flair--6 {
+            background-image: url("https://assets.codepen.io/16327/flair-6.png");
+        }
+
+        .flair--7 {
+            background-image: url("https://assets.codepen.io/16327/flair-7.png");
+        }
+
+        .flair--8 {
+            background-image: url("https://assets.codepen.io/16327/flair-8.png");
+        }
+
+        .flair--9 {
+            background-image: url("https://assets.codepen.io/16327/flair-9.png");
+        }
+
+        .flair--10 {
+            background-image: url("https://assets.codepen.io/16327/flair-10.png");
+        }
+
+        .flair--11 {
+            background-image: url("https://assets.codepen.io/16327/flair-11.png");
+        }
+
+        .flair--12 {
+            background-image: url("https://assets.codepen.io/16327/flair-12.png");
+        }
+
+        .flair--13 {
+            background-image: url("https://assets.codepen.io/16327/flair-13.png");
+        }
+
+        .flair--14 {
+            background-image: url("https://assets.codepen.io/16327/flair-14.png");
+        }
+
+        .flair--15 {
+            background-image: url("https://assets.codepen.io/16327/flair-15.png");
+        }
+
+        .flair--16 {
+            background-image: url("https://assets.codepen.io/16327/flair-16.png");
+        }
+
+        .flair--17 {
+            background-image: url("https://assets.codepen.io/16327/flair-17.png");
+        }
+
+        .flair--18 {
+            background-image: url("https://assets.codepen.io/16327/flair-18.png");
+        }
+
+        .flair--19 {
+            background-image: url("https://assets.codepen.io/16327/flair-19.png");
+        }
+
+        .flair--20 {
+            background-image: url("https://assets.codepen.io/16327/flair-20.png");
+        }
+
+        .flair--21 {
+            background-image: url("https://assets.codepen.io/16327/flair-21.png");
+        }
+
+        .flair--22 {
+            background-image: url("https://assets.codepen.io/16327/flair-22.png");
+        }
+
+        .flair--23 {
+            background-image: url("https://assets.codepen.io/16327/flair-23.png");
+        }
+
+        .flair--24 {
+            background-image: url("https://assets.codepen.io/16327/flair-24.png");
+        }
+
+        .flair--25 {
+            background-image: url("https://assets.codepen.io/16327/flair-25.png");
+        }
+
+        .flair--26 {
+            background-image: url("https://assets.codepen.io/16327/flair-26.png");
+        }
+
+        .flair--27 {
+            background-image: url("https://assets.codepen.io/16327/flair-27.png");
+        }
+
+        .flair--28 {
+            background-image: url("https://assets.codepen.io/16327/flair-28.png");
+        }
+
+        .flair--29 {
+            background-image: url("https://assets.codepen.io/16327/flair-29.png");
+        }
+
+        .flair--30 {
+            background-image: url("https://assets.codepen.io/16327/flair-30.png");
+        }
+
+        .flair--31 {
+            background-image: url("https://assets.codepen.io/16327/flair-31.png");
+        }
+
+        .flair--32 {
+            background-image: url("https://assets.codepen.io/16327/flair-32.png");
+        }
+
+        .flair--33 {
+            background-image: url("https://assets.codepen.io/16327/flair-33.png");
+        }
+
+        .flair--34 {
+            background-image: url("https://assets.codepen.io/16327/flair-34.png");
+        }
+
+        .flair--35 {
+            background-image: url("https://assets.codepen.io/16327/flair-35.png");
+        }
+
+        @media (min-width: 768px) {
+
+            .flair,
+            .flair-container {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="ball"></div>
-    <div class="ground"></div>
-
+    <div class="container">
+        <div class="wrapper">
+            <h4>Click anywhere to fire the Flair Cannon!</h4>
+            <div class="cannon flair"></div>
+            <div class="flair-container"></div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Physics2DPlugin.min.js"></script>
     <script>
         gsap.registerPlugin(Physics2DPlugin);
 
-        // Create a bouncing ball effect
-        function createBouncingBall() {
-            const ball = document.querySelector(".ball");
-
-            // Animate the ball with physics2D
-            function bounce() {
-                gsap.to(ball, {
+        const masterTl = gsap.timeline({
+            paused: true,
+        });
+        const cannon = document.querySelector(".cannon");
+        const angle = 20;
+        const tl1 = gsap
+            .timeline()
+            .to(cannon, {
+                rotation: -angle,
+                duration: 0.65,
+                ease: "power1.inOut"
+            })
+            .to(
+                cannon,
+                {
+                    rotation: angle,
+                    ease: "power1.inOut",
                     duration: 1,
-                    y: "-=200", // Move up
-                    ease: "power2.out",
-                    onComplete: () => {
-                        gsap.to(ball, {
-                            duration: 1,
-                            y: 0, // Return to ground
-                            ease: "bounce.out",
-                            onComplete: bounce // Repeat the bounce
-                        });
-                    }
-                });
-            }
+                    repeat: 3,
+                    yoyo: true
+                }
+            )
+            .to(cannon, {
+                rotation: 0,
+                duration: 0.65,
+                ease: "power1.inOut"
+            });
 
-            // Start the bounce
-            bounce();
+        const bullets = [];
+        const bulletsContainer = document.querySelector(".flair-container");
+        const tl1Time = tl1.duration();
+
+        for (i = 0; i < 40; i++) {
+            const className = "flair--" + gsap.utils.random(2, 35, 1);
+            flairBullet = document.createElement("div");
+            flairBullet.setAttribute("class", "flair flair-bullet " + className);
+            bulletsContainer.appendChild(flairBullet);
+            bullets.push(flairBullet);
+            gsap.set(flairBullet, { scale: "random(0.4, 0.6)" });
         }
 
-        // Start the animation
-        createBouncingBall();
+        const tl2 = gsap
+            .timeline()
+            .to(bullets, {
+                opacity: 1,
+                duration: 0.25,
+                stagger: {
+                    amount: tl1Time
+                }
+            })
+            .to(
+                bullets,
+                {
+                    duration: tl1Time,
+                    physics2D: {
+                        velocity: "random(600, 850)",
+                        angle: () => 270 + gsap.getProperty(cannon, "rotation"),
+                        gravity: 600
+                    },
+                    stagger: {
+                        amount: tl1Time
+                    }
+                },
+                0
+            );
+        masterTl
+            .add(tl1, 0)
+            .add(tl2, 0)
+            .play();
+        window.addEventListener("click", () => masterTl.restart());
     </script>
 </body>
 
