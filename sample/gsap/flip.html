@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Flip Example</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+        }
+
+        .item {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #shuffleButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+    </div>
+
+    <button id="shuffleButton" style="margin-top: 20px;">Shuffle Positions</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+    <script>
+        gsap.registerPlugin(Flip);
+
+        const container = document.querySelector(".container");
+        const items = Array.from(document.querySelectorAll(".item"));
+        let isGrid = true;
+
+        // Toggle between grid and list
+        container.addEventListener("click", () => {
+            const state = Flip.getState(".item"); // Capture the current state
+
+            container.classList.toggle("list");
+            container.style.display = isGrid ? "flex" : "grid";
+
+            Flip.from(state, {
+                duration: 2,
+                ease: "power1.inOut"
+            });
+
+            isGrid = !isGrid;
+        });
+
+        // Shuffle positions
+        document.getElementById("shuffleButton").addEventListener("click", () => {
+            const state = Flip.getState(".item"); // Capture the current state
+
+            // Shuffle items
+            items.sort(() => Math.random() - 0.5);
+            items.forEach(item => container.appendChild(item)); // Reorder DOM elements
+
+            Flip.from(state, {
+                duration: 1,
+                ease: "power1.inOut"
+            });
+        });
+    </script>
+</body>
+
+</html>
