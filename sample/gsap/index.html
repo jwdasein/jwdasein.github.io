@@ -5,35 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GSAP Animation Example</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="js/splittext.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <h1>Hello, GSAP!</h1>
+        <ol>
+            <li><a href="drawSVG.html">DrawSVG</a></li>
+            <li><a href="poem.html">Poem</a></li>
+            <li><a href="textreveal.html">TextReveal</a></li>
+            <li><a href="scroll-smoother.html">ScrollSmoother</a></li>
+            <li><a href="inertia.html">Inertia</a></li>
+        </ol>
     </div>
-
-    <script>
-        gsap.registerPlugin(ScrollTrigger, SplitText);
-        const splitText = new SplitText(".container h1", { type: "chars" });
-        const chars = splitText.chars;
-        gsap.to(chars, {
-            y: 0,
-            duration: 1,
-            stagger: 0.05,
-            ease: "power1.inOut",
-            scrollTrigger: {
-                trigger: ".container h1",
-                start: "top 80%",
-                end: "bottom 20%",
-                markers: true,
-                scrub: true,
-            },
-        });
-
-    </script>
 </body>
 
 </html>
