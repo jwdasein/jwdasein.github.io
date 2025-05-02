@@ -29,7 +29,7 @@
 
 <body>
     <svg viewBox="0 0 100 100">
-        <path id="shape" d="M50,10 L90,90 L10,90 Z" />
+        <path id="shape" d="M50,10 L90,90 L10,90 Z" /> <!-- Initial triangle -->
     </svg>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
@@ -38,14 +38,28 @@
         // Register the MorphSVGPlugin
         gsap.registerPlugin(MorphSVGPlugin);
 
-        // Morph the triangle into a circle and back
-        gsap.to("#shape", {
-            duration: 2,
-            morphSVG: "M50,10 A40,40 0 1,1 49.9,10 Z", // Circle path
-            repeat: -1, // Infinite loop
-            yoyo: true, // Reverse the animation
-            ease: "power1.inOut"
-        });
+        // Morph through multiple shapes in sequence
+        const shapes = [
+            "M50,10 L90,90 L10,90 Z", // Triangle
+            "M50,10 A40,40 0 1,1 49.9,10 Z", // Circle
+            "M10,10 H90 V90 H10 Z", // Square
+            "M50,10 L90,50 L50,90 L10,50 Z" // Diamond
+        ];
+
+        let currentShape = 0;
+
+        function morphToNextShape() {
+            currentShape = (currentShape + 1) % shapes.length; // Cycle through shapes
+            gsap.to("#shape", {
+                duration: 2,
+                morphSVG: shapes[currentShape],
+                ease: "power1.inOut",
+                onComplete: morphToNextShape // Morph to the next shape
+            });
+        }
+
+        // Start morphing
+        morphToNextShape();
     </script>
 </body>
 
