@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Card Shuffling Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(at 40% 45%, #e2e9f7 0, transparent 50%), radial-gradient(at 60% 65%, #eaccff 0, transparent 50%) #fff;
+        }
+
+        .content {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 150px 0 100px;
+            margin-top: -20px;
+        }
+
+        .img-wrapper {
+            scale: 0.8;
+            width: 400px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .img-wrapper img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 5px;
+            filter: saturate(0.9) brightness(1.1);
+        }
+
+        .text {
+            flex: 1 0 0;
+            font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+            color: #333;
+            font-weight: 300;
+            line-height: 1.5;
+            margin-right: 50px;
+        }
+
+        .content:not(:first-child) .text {
+            opacity: 0;
+        }
+
+        .content:not(:first-child) .img-wrapper {
+            transform: translateY(-200%);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column-reverse;
+                padding: 0 50px;
+            }
+
+            .img-wrapper {
+                position: absolute;
+                top: 20%;
+            }
+
+            .text {
+                position: absolute;
+                bottom: 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <p class="text">Instagram</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-ig.png" />
+            </div>
+        </div>
+        <div class="content">
+            <p class="text">Twitter</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-twitter.png" />
+            </div>
+        </div>
+        <div class="content">
+            <p class="text">Youtube</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-yt.png" />
+            </div>
+        </div>
+        <div class="content">
+            <p class="text">Instagram</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-ig.png" />
+            </div>
+        </div>
+        <div class="content">
+            <p class="text">Twitter</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-twitter.png" />
+            </div>
+        </div>
+        <div class="content">
+            <p class="text">Youtube</p>
+            <div class="img-wrapper">
+                <img src="/demo/images/icon-yt.png" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Register GSAP plugins
+            gsap.registerPlugin(ScrollTrigger);
+
+            const contents = gsap.utils.toArray('.content');
+            const texts = gsap.utils.toArray('.text');
+            const imgWrappers = gsap.utils.toArray('.img-wrapper');
+
+            gsap.set(".content:first-child .text", { y: -50 });
+
+            // Create a timeline for the card animations
+            const tl = gsap.timeline({
+                defaults: { ease: "power2.out" },
+                scrollTrigger: {
+                    trigger: ".container",
+                    start: "top top",
+                    end: `+=${contents.length * 50}%`,
+                    pin: true,
+                    scrub: 3,
+                    markers: true
+                }
+            });
+
+            tl.to(imgWrappers[0], { rotate: -3 }, 0);
+
+            contents.forEach((content, i) => {
+                if (i === contents.length - 1) return;
+                tl.to(texts[i], { opacity: 0, duration: 2 }, "+=0.5")
+                    .to(
+                        imgWrappers[i + 1],
+                        {
+                            scale: 1,
+                            duration: 2,
+                            y: (i + 1) * 5,
+                            x: (i + 1) * -5,
+                            opacity: 1,
+                            rotate: (i + 1) * 3 * (i % 2 === 0 ? 1 : -1),
+                        },
+                        "<"
+                    )
+                    .to(
+                        texts[i + 1],
+                        {
+                            opacity: 1,
+                            y: -50,
+                            duration: 2
+                        }, "<+=0.5");
+            });
+        });
+    </script>
+</body>
+
+</html>
