@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      /* Removed overflow: hidden to allow scrolling */
+    }
+
+    #wrapper {
+      height: 100%;
+      overflow: hidden;
+      /* Keep this for ScrollSmoother */
+    }
+
+    #content {
+      height: auto;
+      /* Adjusted to fit the content dynamically */
+    }
+
+    #container,
+    section {
+      height: 100vh;
+    }
+
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="content">
+      <section id="container">
+        <video width="100%">
+          <source src="mov_bbb.mp4" type="video/mp4">
+          Your browser does not support HTML video.
+        </video>
+      </section>
+      <section>
+        The next Section
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      console.clear();
+      $('video').addClass('video-background');
+
+      const video = document.querySelector(".video-background");
+      let src = video.currentSrc || video.src;
+      console.log(video, src);
+
+      /* Make sure the video is 'activated' on iOS */
+      function once(el, event, fn, opts) {
+        var onceFn = function (e) {
+          el.removeEventListener(event, onceFn);
+          fn.apply(this, arguments);
+        };
+        el.addEventListener(event, onceFn, opts);
+        return onceFn;
+      }
+
+      once(document.documentElement, "touchstart", function (e) {
+        video.play();
+        video.pause();
+      });
+
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+      // Initialize ScrollSmoother
+      ScrollSmoother.create({
+        wrapper: "#wrapper",
+        content: "#content",
+        smooth: 1.5, // Adjust smoothness
+      });
+
+      let tl = gsap.timeline({
+        defaults: { duration: 1 },
+        scrollTrigger: {
+          trigger: "#container",
+          start: "top top",
+          end: "+=100vh",
+          markers: true,
+          pin: true,
+          scrub: true
+        }
+      });
+
+      once(video, "loadedmetadata", () => {
+        tl.fromTo(
+          video,
+          {
+            currentTime: 0
+          },
+          {
+            currentTime: video.duration || 1
+          }
+        );
+      });
+
+      /*!
+           * © This code was written by Nicolai Palmkvist.
+           * For more information, visit my Elementor Youtube channel: https://www.youtube.com/@nicopalmkvist
+           */
+
+      setTimeout(function () {
+        if (window["fetch"]) {
+          fetch(src)
+            .then((response) => response.blob())
+            .then((response) => {
+              var blobURL = URL.createObjectURL(response);
+
+              var t = video.currentTime;
+              once(document.documentElement, "touchstart", function (e) {
+                video.play();
+                video.pause();
+              });
+
+              video.setAttribute("src", blobURL);
+              video.currentTime = t + 0.01;
+            });
+        }
+      }, 1000);
+    });
+
+  </script>
+</body>
+
+</html>
