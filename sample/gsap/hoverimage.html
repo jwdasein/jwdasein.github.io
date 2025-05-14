@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Hover Image Follow Effect</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .text-container {
+            font-size: 24px;
+            line-height: 1.8;
+            margin: 40px 0;
+
+        }
+
+        .hover-word {
+            display: inline-block;
+            font-weight: bold;
+            color: #2c3e50;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0 4px;
+        }
+
+        .hover-word:hover {
+            color: #e74c3c;
+        }
+
+        .image-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instructions {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>GSAP Hover Image Follow Effect</h1>
+
+        <div class="text-container">
+            Hover over the words <span class="hover-word" data-image="img/pexels-jordi-6465919.jpg">mountains</span>,
+            <span class="hover-word" data-image="img/pexels-hson-13981445.jpg">ocean</span>,
+            <span class="hover-word" data-image="img/pexels-jordi-6465919.jpg">forest</span>, or
+            <span class="hover-word" data-image="img/pexels-hson-13981445.jpg">desert</span>
+            to see different images that follow your cursor.
+        </div>
+
+        <div class="instructions">
+            <h3>How it works:</h3>
+            <p>Move your mouse over the highlighted words. An image related to each word will appear and follow your
+                cursor. When you move away from the word, the image disappears.</p>
+        </div>
+    </div>
+
+    <div id="imageContainer" class="image-container">
+        <img id="hoverImage" src="" alt="Hover image">
+    </div>
+
+    <script>
+        // Get all elements with hover-word class
+        const hoverWords = document.querySelectorAll('.hover-word');
+        const imageContainer = document.getElementById('imageContainer');
+        const hoverImage = document.getElementById('hoverImage');
+
+        // Initialize GSAP timeline for the image animation
+        const tl = gsap.timeline({ paused: true });
+        // tl.to(imageContainer, {
+        //     duration: 0.3,
+        //     opacity: 1,
+        //     scale: 1,
+        //     ease: "power2.out"
+        // });
+
+        // Function to handle mouse enter
+        function handleMouseEnter(e) {
+            // Get the image URL from the data attribute
+            const imageUrl = this.getAttribute('data-image');
+
+            // Set the image source
+            hoverImage.src = imageUrl;
+
+            // Position the image container near the cursor
+            updateImagePosition(e);
+
+            // Play the animation
+            tl.restart();
+        }
+
+        // Function to handle mouse leave
+        function handleMouseLeave() {
+            // Reverse the animation
+            gsap.to(imageContainer, {
+                duration: 0.2,
+                opacity: 0,
+                scale: 0.8,
+                ease: "power2.in"
+            });
+        }
+
+        // Function to update image position based on mouse position
+        function updateImagePosition(e) {
+            // Calculate the position based on the mouse pointer
+            let xPos = e.clientX + 20; // Directly use the mouse X position
+            let yPos = e.clientY + 20; // Directly use the mouse Y position
+
+            // Use GSAP to animate the position for smoother movement
+            gsap.to(imageContainer, {
+                duration: 0.2,
+                x: xPos,
+                y: yPos,
+                opacity: 1,
+                scale: 1,
+                ease: "power2.out"
+            });
+        }
+
+        // Add event listeners to all hover words
+        hoverWords.forEach(word => {
+            word.addEventListener('mouseenter', handleMouseEnter);
+            word.addEventListener('mouseleave', handleMouseLeave);
+            word.addEventListener('mousemove', updateImagePosition);
+        });
+
+        // Initialize the image container scale
+        gsap.set(imageContainer, { scale: 0.8, transformOrigin: "top left" });
+    </script>
+</body>
+
+</html>
