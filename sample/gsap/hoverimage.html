@@ -146,7 +146,10 @@
             // Calculate the position based on the mouse pointer
             let xPos = e.clientX + 20; // Directly use the mouse X position
             let yPos = e.clientY + 20; // Directly use the mouse Y position
-
+            if (xPos > window.innerWidth - 200) {
+                xPos = window.innerWidth - 220; // Prevent going out of bounds
+            }
+            console.log(e.clientX, e.offsetX);
             // Use GSAP to animate the position for smoother movement
             gsap.to(imageContainer, {
                 duration: 0.2,
