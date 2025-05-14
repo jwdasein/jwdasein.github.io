@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Scroll Pin & Recede Effect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .section-container {
+            position: relative;
+            width: 100%;
+            height: 500vh;
+            /* Taller than viewport to enable scrolling */
+        }
+
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 2rem;
+            will-change: transform, opacity;
+            overflow: hidden;
+        }
+
+        .section-1 {
+            background-color: #845EC2;
+        }
+
+        .section-2 {
+            background-color: #D65DB1;
+        }
+
+        .section-3 {
+            background-color: #FF6F91;
+        }
+
+        .section-4 {
+            background-color: #FF9671;
+        }
+
+        .section-5 {
+            background-color: #FFC75F;
+        }
+
+        .intro,
+        .outro {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .intro {
+            background-color: #222;
+        }
+
+        .outro {
+            background-color: #333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        .content {
+            font-size: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background-color: white;
+            color: #111;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="con">
+            <div class="intro">
+                <div>
+                    <h1>GSAP Scroll Pin & Recede Effect</h1>
+                    <p class="content">Scroll down to see sections that pin at the top and recede into space.</p>
+                    <a href="#section-container" class="button">Explore</a>
+                </div>
+            </div>
+
+            <div id="section-container" class="section-container">
+                <div class="section section-1">
+                    <div>Section 1: Pinned and then receding into space</div>
+                </div>
+                <div class="section section-2">
+                    <div>Section 2: Pinned and then receding into space</div>
+                </div>
+                <div class="section section-3">
+                    <div>Section 3: Pinned and then receding into space</div>
+                </div>
+                <div class="section section-4">
+                    <div>Section 4: Pinned and then receding into space</div>
+                </div>
+                <div class="section section-5">
+                    <div>Section 5: Pinned and then receding into space</div>
+                </div>
+            </div>
+
+            <div class="outro">
+                <div>
+                    <h1>That's the end of the effect demo</h1>
+                    <p class="content">The sections were pinned at the top and then transformed to create a receding
+                        into space
+                        effect.</p>
+                    <a href="#" class="button"
+                        onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back to
+                        Top</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- GSAP and ScrollTrigger from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+
+    <script>
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+        // Initialize ScrollSmoother
+        const smoother = ScrollSmoother.create({
+            wrapper: '.wrapper',
+            content: '.con',
+            smooth: 1,
+            effects: true,
+        });
+
+        // Select all sections
+        const sections = document.querySelectorAll('.section');
+
+        // Set initial positions for each section (stacked vertically)
+        gsap.set(sections, {
+            yPercent: (index) => index * 100
+        });
+
+        // Create a timeline for each section
+        sections.forEach((section, index) => {
+            // Create the scrollTrigger for this section
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.section-container',
+                    start: () => 'top top-=' + (index * window.innerHeight),
+                    end: () => '+=' + window.innerHeight,
+                    scrub: 2,
+                    invalidateOnRefresh: true,
+                }
+            });
+
+            // Animation timeline:
+            // 1. Pin the section at the top
+            // 2. Scale down and fade out while moving into z-space
+            tl.to(section, {
+                scale: 0.8,
+                opacity: 0.5,
+                duration: 0.3,
+            }).to(section, {
+
+                scale: 0.3,
+                opacity: 0,
+                z: -1000,
+                duration: 0.7
+            });
+
+            //Move the next section slightly upward
+            // if (index < sections.length - 1) {
+            //     const nextSection = sections[index + 1];
+            //     tl.to(nextSection, {
+            //         yPercent: -5, // Move the next section upward by 100% to align properly
+            //         duration: 0.7,
+            //         ease: "power1.out"
+            //     }, "-=1"); // Start this animation earlier than the previous one
+            // }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
