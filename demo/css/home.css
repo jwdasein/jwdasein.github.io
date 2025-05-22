@@ -19,6 +19,8 @@
     padding: 15px;
     display: flex;
     align-items: stretch;
+    max-width: 1200px;
+    margin: auto;
     /* Stretch the children to have the same height */
 }
 

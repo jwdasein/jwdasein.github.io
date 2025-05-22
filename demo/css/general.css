@@ -4,16 +4,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* General Elements used for all pages */
-html, body {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
 body {
     font-family: "Urbanist", sans-serif;
     margin: 0;
     padding: 0;
     font-size: 16px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 h1, h2, h3{
