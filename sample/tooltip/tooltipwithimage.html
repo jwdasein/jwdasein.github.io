@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Tooltip - Default functionality</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+    <style>
+        label {
+            display: inline-block;
+            width: 5em;
+        }
+
+        /* Custom styles for image tooltips */
+        .ui-tooltip {
+            max-width: 300px;
+            padding: 5px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .tooltip-caption {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p><a href="#" title="That's what this widget is" data-image="images/logo.png"
+            data-caption="jQuery UI Tooltips">Tooltips</a> can be attached to any element. When you hover
+        the element with your mouse, the title attribute is displayed in a little box next to the element, just like a
+        native tooltip.</p>
+    <p>But as it's not a native tooltip, it can be styled. Any themes built with
+        <a href="https://jqueryui.com/themeroller/" title="ThemeRoller: jQuery UI's theme builder application"
+            data-image="images/content.png" data-caption="ThemeRoller Interface">ThemeRoller</a>
+        will also style tooltips accordingly.
+    </p>
+    <p>Tooltips are also useful for form elements, to show some additional information in the context of each field.</p>
+    <p><label for="age">Your age:</label><input id="age" title="We ask for your age only for statistical purposes."
+            data-image="images/check.png" data-caption="Age verification"></p>
+    <p>Hover the field to see the tooltip.</p>
+
+
+    <!-- Scripts below must be located by the end of /body -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).tooltip({
+                content: function () {
+                    var element = $(this);
+                    var imageUrl = element.data('image');
+                    var caption = element.data('caption');
+                    var title = element.attr('title');
+
+                    // If element has image data, show image tooltip
+                    if (imageUrl) {
+                        var html = '<img src="' + imageUrl + '" class="tooltip-image" alt="Tooltip image">';
+                        if (caption) {
+                            html += '<div class="tooltip-caption">' + caption + '</div>';
+                        }
+                        return html;
+                    }
+
+                    // Otherwise, show regular text tooltip
+                    return title;
+                },
+                open: function (event, ui) {
+                    // Handle image loading errors
+                    ui.tooltip.find('.tooltip-image').on('error', function () {
+                        $(this).parent().html('<div style="color: red; font-size: 12px;">Image not found</div>');
+                    });
+                }
+            });
+            /* check here for more options: https://jqueryui.com/tooltip/ */
+        });
+    </script>
+</body>
+
+</html>
