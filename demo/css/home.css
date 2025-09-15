@@ -5,6 +5,7 @@
     background-size: 80%;
     background-repeat: no-repeat;
     background-position: bottom center;
+    /* // TODO: #5 issue: get the background position fixed */
 }
 
 .banner h1 {
