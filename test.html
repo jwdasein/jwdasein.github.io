@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sci-frame {
+            position: relative;
+            padding: 80px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 80%;
+            margin: 80px auto;
+            color: white;
+        }
+
+        /* Corner brackets */
+        .sci-frame::before,
+        .sci-frame::after,
+        .sci-frame .content::before,
+        .sci-frame .content::after {
+            content: "";
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid white;
+        }
+
+        /* Top-left */
+        .sci-frame::before {
+            top: -3px;
+            left: -3px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        /* Top-right */
+        .sci-frame::after {
+            top: -3px;
+            right: -3px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        /* Bottom-left */
+        .sci-frame .content::before {
+            bottom: -3px;
+            left: -3px;
+            border-right: none;
+            border-top: none;
+        }
+
+        /* Bottom-right */
+        .sci-frame .content::after {
+            bottom: -3px;
+            right: -3px;
+            border-left: none;
+            border-top: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sci-frame">
+        <div class="content">
+            <h1>EXPLORE<br><span>SPACE</span></h1>
+            <p>Dare to dream beyond the skies. Embark on a journey...</p>
+            <button class="btn">Learn More</button>
+        </div>
+    </div>
+</body>
+
+</html>
