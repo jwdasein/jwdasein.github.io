@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page One</title>
+    <link rel="stylesheet" href="transition.css">
+</head>
+
+<body>
+
+    <!-- Transition overlay -->
+    <div id="transition-overlay">
+        <div class="overlay-panel"></div>
+        <div class="overlay-panel"></div>
+        <div class="overlay-panel"></div>
+        <div class="overlay-panel"></div>
+        <div class="overlay-panel"></div>
+    </div>
+
+    <!-- Page content -->
+    <main class="page page-1">
+        <h1>Page One</h1>
+        <p>Welcome to the first page</p>
+    </main>
+
+    <!-- Nav -->
+    <nav>
+        <a class="active">Page 1</a>
+        <a href="pg2.html" class="transition-link">Page 2</a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="transition.js"></script>
+</body>
+
+</html>

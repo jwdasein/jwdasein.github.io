@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    overflow: hidden;
+}
+
+/* Overlay that covers the screen during transition */
+#transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    pointer-events: none;
+}
+
+.overlay-panel {
+    flex: 1;
+    background: #111;
+    transform: scaleY(0);
+    transform-origin: bottom;
+}
+
+/* Pages */
+.page {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.page-1 { background: #f5f0e8; }
+.page-2 { background: #e8f0f5; }
+
+.page h1 {
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+}
+
+.page p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Nav links */
+nav {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 200;
+}
+
+nav a {
+    padding: 10px 24px;
+    border: 1px solid #111;
+    text-decoration: none;
+    color: #111;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+}
+
+nav a:hover {
+    background: #111;
+    color: #fff;
+}
+
+nav a.active {
+    background: #111;
+    color: #fff;
+    pointer-events: none;
+}
